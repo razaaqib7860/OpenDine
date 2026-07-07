@@ -5,6 +5,8 @@ const app = express();
 
 const connectMongoDb = require("./connection");
 connectMongoDb(process.env.MONGO_URL)
+console.log(process.env.MONGO_URL);
+
 // connectMongoDb("mongodb://127.0.0.1:27017/url_shortner");
 
 
