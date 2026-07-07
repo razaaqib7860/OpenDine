@@ -129,20 +129,23 @@ h1{
 
         <h2 class="last-click">
 
-            <%= new Date(url.visitHistory[url.visitHistory.length - 1].timestamp)
-                .toLocaleDateString('en-IN', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric'
-                }) %>
+<%= new Date(url.visitHistory[url.visitHistory.length - 1].timestamp)
+    .toLocaleDateString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    }) %>
 
-            <br>
+<br>
 
-            <%= new Date(url.visitHistory[url.visitHistory.length - 1].timestamp)
-                .toLocaleTimeString('en-IN', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                }) %>
+<%= new Date(url.visitHistory[url.visitHistory.length - 1].timestamp)
+    .toLocaleTimeString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    }) %>
 
         </h2>
 
