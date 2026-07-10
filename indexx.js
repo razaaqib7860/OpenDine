@@ -1,3 +1,6 @@
+
+require("dotenv").config();
+
 const express=require("express");
 const app=express();
 
@@ -7,7 +10,7 @@ connectMongoDB(process.env.MONGO_URL);
 
 //routes require
 const home=require(".routes/home")
-
+const user=require(".routes/user")
 
 //test
 app.get("/test", (req, res) => {
@@ -18,9 +21,13 @@ app.get("/test", (req, res) => {
 const cookieParser=require("cookie-parser");
 app.use(cookieParser());
 app.use(express.json())
-app.user(express.urlencoded({extended:true}));
+app.use(express.urlencoded({extended:true}));
 
-//routes
+//Set EJS as the view engine
+app.set("view engine", "ejs");  
+app.set("views", "./views"); 
+
+routes
 app.use("/",home);
 app.use("/user",user);
 

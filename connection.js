@@ -1,9 +1,9 @@
 
 const mongoose=require("mongoose");
 
-async function connect(url){
+async function connectMongoDb(url){
     return mongoose.connect(url)
     .then(()=>console.log("MongoDB Connected"))
-    .catch(err=>console.log("Mongo Error",err));
+    .catch(err=>console.log(err));
 }
 module.exports=connectMongoDb;

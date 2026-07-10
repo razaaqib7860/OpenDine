@@ -9,7 +9,7 @@ connectMongoDb(process.env.MONGO_URL)
 // connectMongoDb("mongodb://127.0.0.1:27017/url_shortner");
 
 
-const Url=require("./models/url"); 
+// const Url=require("./models/url"); 
 const urlRoutes = require("./routes/url");
 const static = require("./routes/statics");
 const userRoutes = require("./routes/user");
