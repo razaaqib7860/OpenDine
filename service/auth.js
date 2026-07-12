@@ -2,15 +2,17 @@
 const jwt=require("jsonwebtoken");
 const secret = process.env.JWT_SECRET;
 
-function setUser(userFound){
+//store user 
+function setUser(user){
     return jwt.sign({
-        _id: userFound._id,
-        email: userFound.email,
+        _id: user._id,
+        email: user.email,
     },secret);
 }
+//get user
 function getUser(token){
     if(!token) return null;
-    return jwt.verify(token,secret);
+    return jwt.verify(token,secret); //it return true/false
 }
 
 module.exports={
