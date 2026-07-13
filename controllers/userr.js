@@ -1,18 +1,23 @@
-const User=required("../models/user");
+const User=require("../models/user");
+const {setUser}=require("../service/auth");
+const jwt=require("jsonwebtoken")
 
 //signup
 //POST /user/signup
 async function signup(req,res){
-const {name,email,password} = req.body;
-if(!name||!email||!password){
-    return res.render("login",{error:"All feild are required!"})
+const {Name,email,password,phone} = req.body;
+if(!Name||!email||!password||!phone){
+    return res.render("signup",
+        {error:"All feild are required!"})
 }
-const existUser=await User.findOne({email,password});
+const existUser=await User.findOne({email});
 if(existUser){
-    return res.render("register",{error:"User already exist",message:"please login"});
+    return res.render("login",
+        {error:"User already exist",message:"please login"});
 }
-await User.create({
-    name,
+const user= await User.create({
+    Name,
+    phone,
     email,
     password,
 });
@@ -21,21 +26,26 @@ res.cookie("uid", token);
 return res.redirect("/");
 }
 
+
 //login
 //POST /user/login
 async function login(req,res){
-    try {
+try {
 const {email,password} = req.body;
 if(!email||!password){
     return res.render("login",{error:"Email and password are required!"})
 }
+
 const existUser=await User.findOne({email,password});
+
 if(!existUser){
     return res.render("login",{error:"User not found!"})
 }
-if(existUser.email!==existUser.password){
+
+if(existUser.password!==password){
      return res.render("login",{error:"Password incorrect!"})
 }
+
 const token = setUser(existUser);
 res.cookie("uid",token,{
     httpOnly:true
@@ -45,6 +55,7 @@ return res.redirect("/");
         console.error(error);
     }
 }
+
 //logout
 async function logout(req,res){
     res.clearCookie("uid");
@@ -58,4 +69,5 @@ async function profile(req,res){
 
 }
 
+module.exports={signup,login,logout,profile};
 
