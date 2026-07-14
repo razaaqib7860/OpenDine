@@ -18,7 +18,8 @@ const ResturantSchema=new mongoose.Schema({
          type:String,
          required:true,
          unique:true,
-         trim:true
+         trim:true,
+         lowercase:true
     },
 
     description:{
@@ -28,19 +29,24 @@ const ResturantSchema=new mongoose.Schema({
 
     cuisine:{
         type:[String],
-        required:true
+        required:true,
+        trim:true
+    },
+
+    tags:{
+        type:[string],
     },
 
     priceRange:{
         type:String,
-        enum:["₹","₹₹","₹₹₹","₹₹₹₹"]
+        enum:["₹","₹₹","₹₹₹","₹₹₹₹"],
+        required:true
     },
 
-    images:[
-        {
-            type:String
-        }
-    ],
+    images: {
+    type: [String],
+    default: ["/images/default-restaurant.jpg"]
+    },
 
     chef:{
         type:String,
@@ -85,6 +91,11 @@ const ResturantSchema=new mongoose.Schema({
         default:60
     },
 
+    totalSeats:{
+        type:Number,
+        default:20
+    },
+
     totalTables:{
         type:Number,
         required:true
@@ -97,7 +108,9 @@ const ResturantSchema=new mongoose.Schema({
 
     averageRating:{
         type:Number,
-        default:0
+        default:5.0,
+        min:1,
+        max:5,
     },
 
     totalReviews:{
@@ -108,6 +121,21 @@ const ResturantSchema=new mongoose.Schema({
     isOpen:{
         type:Boolean,
         default:true
+    },
+
+    featured:{
+        type: Boolean,
+        default:false
+    },
+
+    exclusive:{
+        type:Boolean,
+        default:false
+    },
+
+    status:{
+        enum:["approved","pending","rejected"],
+        default:"pending"
     }
 
 },{timestamps:true});
