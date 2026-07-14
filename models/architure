@@ -1,0 +1,312 @@
+// 📂 models/User.js
+
+// You already have this.
+
+// const mongoose = require("mongoose");
+
+// const userSchema = new mongoose.Schema({
+
+//     Name:{
+//         type:String,
+//         required:true,
+//         trim:true
+//     },
+
+//     email:{
+//         type:String,
+//         required:true,
+//         unique:true,
+//         lowercase:true
+//     },
+
+//     phone:{
+//         type:String,
+//         required:true
+//     },
+
+//     password:{
+//         type:String,
+//         required:true
+//     },
+
+//     role:{
+//         type:String,
+//         enum:["customer","owner","admin"],
+//         default:"customer"
+//     }
+
+// },{timestamps:true});
+
+// module.exports = mongoose.model("User",userSchema);
+// 📂 models/Restaurant.js
+// const mongoose=require("mongoose");
+
+// const restaurantSchema=new mongoose.Schema({
+
+//     owner:{
+//         type:mongoose.Schema.Types.ObjectId,
+//         ref:"User",
+//         required:true
+//     },
+
+//     name:{
+//         type:String,
+//         required:true,
+//         trim:true
+//     },
+
+//     description:{
+//         type:String
+//     },
+
+//     cuisine:{
+//         type:[String],
+//         required:true
+//     },
+
+//     priceRange:{
+//         type:String,
+//         enum:["₹","₹₹","₹₹₹","₹₹₹₹"]
+//     },
+
+//     images:[
+//         {
+//             type:String
+//         }
+//     ],
+
+//     address:{
+//         type:String,
+//         required:true
+//     },
+
+//     city:{
+//         type:String,
+//         required:true
+//     },
+
+//     state:{
+//         type:String,
+//         required:true
+//     },
+
+//     pincode:String,
+
+//     location:{
+//         type:{
+//             type:String,
+//             enum:["Point"],
+//             default:"Point"
+//         },
+//         coordinates:{
+//             type:[Number], // [longitude, latitude]
+//             required:true
+//         }
+//     },
+
+//     openingTime:{
+//         type:String,
+//         required:true
+//     },
+
+//     closingTime:{
+//         type:String,
+//         required:true
+//     },
+
+//     slotDuration:{
+//         type:Number,
+//         default:60
+//     },
+
+//     totalTables:{
+//         type:Number,
+//         required:true
+//     },
+
+//     capacity:{
+//         type:Number,
+//         default:4
+//     },
+
+//     averageRating:{
+//         type:Number,
+//         default:0
+//     },
+
+//     totalReviews:{
+//         type:Number,
+//         default:0
+//     },
+
+//     isOpen:{
+//         type:Boolean,
+//         default:true
+//     }
+
+// },{timestamps:true});
+
+// restaurantSchema.index({location:"2dsphere"});
+
+// module.exports=mongoose.model("Restaurant",restaurantSchema);
+// 📂 models/Booking.js
+// const mongoose=require("mongoose");
+
+// const bookingSchema=new mongoose.Schema({
+
+//     user:{
+//         type:mongoose.Schema.Types.ObjectId,
+//         ref:"User",
+//         required:true
+//     },
+
+//     restaurant:{
+//         type:mongoose.Schema.Types.ObjectId,
+//         ref:"Restaurant",
+//         required:true
+//     },
+
+//     bookingDate:{
+//         type:Date,
+//         required:true
+//     },
+
+//     slotTime:{
+//         type:String,
+//         required:true
+//     },
+
+//     guestCount:{
+//         type:Number,
+//         required:true
+//     },
+
+//     tableNumber:Number,
+
+//     status:{
+//         type:String,
+//         enum:[
+//             "Pending",
+//             "Confirmed",
+//             "Cancelled",
+//             "Completed"
+//         ],
+//         default:"Pending"
+//     }
+
+// },{timestamps:true});
+
+// module.exports=mongoose.model("Booking",bookingSchema);
+// 📂 models/Slot.js
+
+// This is one of the most important models.
+
+// const mongoose=require("mongoose");
+
+// const slotSchema=new mongoose.Schema({
+
+//     restaurant:{
+//         type:mongoose.Schema.Types.ObjectId,
+//         ref:"Restaurant",
+//         required:true
+//     },
+
+//     date:{
+//         type:Date,
+//         required:true
+//     },
+
+//     slots:[
+
+//         {
+
+//             time:String,
+
+//             availableTables:Number
+
+//         }
+
+//     ]
+
+// });
+
+// module.exports=mongoose.model("Slot",slotSchema);
+
+// Example document:
+
+// {
+//   "restaurant":"686......",
+//   "date":"2026-07-15",
+//   "slots":[
+//     {
+//       "time":"06:00 PM",
+//       "availableTables":12
+//     },
+//     {
+//       "time":"07:00 PM",
+//       "availableTables":4
+//     }
+//   ]
+// }
+// 📂 models/Review.js
+// const mongoose=require("mongoose");
+
+// const reviewSchema=new mongoose.Schema({
+
+//     user:{
+//         type:mongoose.Schema.Types.ObjectId,
+//         ref:"User"
+//     },
+
+//     restaurant:{
+//         type:mongoose.Schema.Types.ObjectId,
+//         ref:"Restaurant"
+//     },
+
+//     rating:{
+//         type:Number,
+//         min:1,
+//         max:5
+//     },
+
+//     review:String
+
+// },{timestamps:true});
+
+// module.exports=mongoose.model("Review",reviewSchema);
+// 📂 models/Favorite.js
+// const mongoose=require("mongoose");
+
+// const favoriteSchema=new mongoose.Schema({
+
+//     user:{
+//         type:mongoose.Schema.Types.ObjectId,
+//         ref:"User"
+//     },
+
+//     restaurant:{
+//         type:mongoose.Schema.Types.ObjectId,
+//         ref:"Restaurant"
+//     }
+
+// });
+
+// module.exports=mongoose.model("Favorite",favoriteSchema);
+// Final Database
+// User
+// │
+// ├── owns
+// │
+// Restaurant
+// │
+// ├── has many
+// │      │
+// │      ├── Booking
+// │      ├── Slot
+// │      └── Review
+// │
+// User
+// │
+// ├── Booking
+// ├── Review
+// └── Favorite

@@ -2,45 +2,24 @@ const {getUser} = require("../service/auth");
 
 
 async function checkAuth(req,res,next){
-
-    console.log("CHECK AUTH RUNNING");
-
     const token = req.cookies.uid;
-
-    console.log("TOKEN:",token);
-
-
     if(!token){
-
         res.locals.user = null;
-
         return next();
     }
-
-
+    
     const user = getUser(token);
-
-
-    console.log("DECODED USER:",user);
-
-
     if(!user){
-
         res.locals.user = null;
-
         return next();
     }
-
 
     req.user = user;
-
     res.locals.user = user;
-
-
     next();
 }
 
-function restrictTo(roles=[]){
+function restrictTo(roles=["admin"]){
     return function(req,res,next){
         if(!req.user){
             return res.redirect("login");

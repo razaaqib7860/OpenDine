@@ -1,11 +1,12 @@
-const User=require("../models/user");
 const {setUser}=require("../service/auth");
 const jwt=require("jsonwebtoken")
 
-//signup
-//POST /user/signup
-async function signup(req,res){
-const {Name,email,password,phone} = req.body;
+//register
+
+//POST /owner/register
+
+async function register(req,res){
+const {name,email,password,phone} = req.body;
 if(!Name||!email||!password||!phone){
     return res.render("signup",
         {error:"All feild are required!"})

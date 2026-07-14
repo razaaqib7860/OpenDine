@@ -12,9 +12,13 @@ connectMongoDB(process.env.MONGO_URL);
 
 
 //routes require
-const home=require("./routes/home")
-const user=require("./routes/user")
-const owner=require("./routes/owner")
+const home=require("./routes/home");
+const user=require("./routes/user");
+const resturant=require("./routes/resturant");
+const booking=require("./routes/booking");
+const owner=require("./routes/owner");
+const admin=require("./routes/admin");
+
 //test
 app.get("/test", (req, res) => {
   return res.send("<h1>SSR (Server Side Rendering)</h1>" )
@@ -36,7 +40,10 @@ app.use(express.static("public"));
 //routes
 app.use("/",home);
 app.use("/user",user);
-app.use("/owner",restrictTo('customer'),owner);
+app.use("/resturant",resturant);
+app.use("/booking",booking);
+app.use("/owner",restrictTo(['owner','admin']),owner);
+app.use("/admin",restrictTo(['admin']),admin);
 
 //port
 const PORT = process.env.PORT || 2340;
