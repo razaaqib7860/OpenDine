@@ -34,7 +34,7 @@ const ResturantSchema=new mongoose.Schema({
     },
 
     tags:{
-        type:[string],
+        type:[String],
     },
 
     priceRange:{
@@ -134,6 +134,7 @@ const ResturantSchema=new mongoose.Schema({
     },
 
     status:{
+        type:String,
         enum:["approved","pending","rejected"],
         default:"pending"
     }

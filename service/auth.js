@@ -6,7 +6,7 @@ const secret = process.env.SECRET;
 function setUser(user){
     return jwt.sign({
         _id: user._id,
-        Name:user.Name,
+        Name: user.Name,
         email: user.email,
     },secret);
 }

@@ -14,7 +14,7 @@ connectMongoDB(process.env.MONGO_URL);
 //routes require
 const home=require("./routes/home");
 const user=require("./routes/user");
-const resturant=require("./routes/resturant");
+const restaurant=require("./routes/resturant");
 const booking=require("./routes/booking");
 const owner=require("./routes/owner");
 const admin=require("./routes/admin");
@@ -40,8 +40,8 @@ app.use(express.static("public"));
 //routes
 app.use("/",home);
 app.use("/user",user);
-app.use("/resturant",resturant);
-app.use("/booking",booking);
+app.use("/restaurants",restaurant);
+app.use("/bookings",booking);
 app.use("/owner",restrictTo(['owner','admin']),owner);
 app.use("/admin",restrictTo(['admin']),admin);
 

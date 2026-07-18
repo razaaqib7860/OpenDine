@@ -1,5 +1,5 @@
-const Resturant = require("../models/resturant");
 
+const Resturant = require("../models/resturant");
 
 const getResturants=async(req,res)=>{
     try {
@@ -39,7 +39,7 @@ const getResturants=async(req,res)=>{
             sortOption={priceRange:-1}
         }
 
-        const resturantResult=(await Resturant.find(queryObj)).sort(sortOption);
+        const resturantResult=await Resturant.find(queryObj).sort(sortOption);
         res.json(resturantResult);
 
     } catch (error) {
@@ -93,7 +93,7 @@ const getResturantAvailability=async(req,res)=>{
     }
     const bookingDate=new Date().toLocaleString;
 
-//Get all activr bookings on this date for the restaurant;
+//Get all active bookings on this date for the restaurant;
     const bookings=await Booking.find({
         restaurant:restaurant._id,
         date:bookingDate,
@@ -101,7 +101,7 @@ const getResturantAvailability=async(req,res)=>{
     })
 
     //map slots to available capacities
-    const availablity=resturant.availableSlots,mao((slot)=>{
+    const availablity=resturant.availableSlots.map((slot)=>{
         const bookedSeats = bookingDate.filter((b)=>b.time===slot).reduce((sum,b)=>sum+b.guests,0)
 
         const totalSeats=restaurant.totalSeats || 20;
