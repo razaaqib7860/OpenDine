@@ -19,7 +19,7 @@ async function checkAuth(req,res,next){
     next();
 }
 
-function restrictTo(roles=["admin"]){
+function restrictTo(roles=[]){
     return function(req,res,next){
         if(!req.user){
             return res.redirect("login");

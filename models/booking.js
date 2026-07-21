@@ -8,7 +8,7 @@ const BookingSchema=new mongoose.Schema({
         required:true
     },
 
-    resturant:{
+    restaurant:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Resturant",
         required:true,
@@ -48,5 +48,5 @@ const BookingSchema=new mongoose.Schema({
 
 },{timestamps:true});
 
-const Booking=mongoose.model("Resturant",BookingSchema);
+const Booking=mongoose.model("Restaurant",BookingSchema);
 module.exports=Booking;

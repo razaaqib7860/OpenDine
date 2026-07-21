@@ -1,5 +1,5 @@
 
-require("dotenv").config(); //it will help 
+require("dotenv").config(); //it 
 
 const express=require("express");
 const app=express();
@@ -14,7 +14,7 @@ connectMongoDB(process.env.MONGO_URL);
 //routes require
 const home=require("./routes/home");
 const user=require("./routes/user");
-const restaurant=require("./routes/resturant");
+const restaurant=require("./routes/restaurant");
 const booking=require("./routes/booking");
 const owner=require("./routes/owner");
 const admin=require("./routes/admin");
@@ -39,9 +39,9 @@ app.use(express.static("public"));
 
 //routes
 app.use("/",home);
-app.use("/user",user);
+app.use("/user",user); 
 app.use("/restaurants",restaurant);
-app.use("/bookings",booking);
+app.use("/bookings",booking); 
 app.use("/owner",restrictTo(['owner','admin']),owner);
 app.use("/admin",restrictTo(['admin']),admin);
 

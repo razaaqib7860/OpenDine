@@ -1,7 +1,7 @@
 
-const Resturant = require("../models/resturant");
+const Restaurant = require("../models/restaurant");
 
-const getResturants=async(req,res)=>{
+const getRestaurants=async(req,res)=>{
     try {
         const {search,priceRange,rating,location,sort}= req.query;
 
@@ -39,8 +39,8 @@ const getResturants=async(req,res)=>{
             sortOption={priceRange:-1}
         }
 
-        const resturantResult=await Resturant.find(queryObj).sort(sortOption);
-        res.json(resturantResult);
+        const restaurantResult=await Restaurant.find(queryObj).sort(sortOption);
+        res.json(restaurantResult);
 
     } catch (error) {
         console.error(error);
@@ -49,28 +49,28 @@ const getResturants=async(req,res)=>{
 };
 
 
-const getFeatureResturants=async(req,res)=>{
+const getFeatureRestaurants=async(req,res)=>{
     try {
-        const featured=await Resturant.find({
+        const featured=await Restaurant.find({
             status:"approved",
             $or:[{featured:true},{exclusive:true}]
         }).limit(6)
         res.json(featured);
 
     } catch (error) {
-        console.error("Get featured Resturants Error:",error);
+        console.error("Get featured Restaurants Error:",error);
         res.status(500).json({message:"server error"});
     }
 };
 
-const getResturantBySlug=async(req,res)=>{
+const getRestaurantBySlug=async(req,res)=>{
     try {
-        const resturant = await Resturant.findOne({
+        const restaurant = await Restaurant.findOne({
             status:"approved",
             slug:req.params.slug
         })
-        if(!resturant){
-            res.status(404).json({message:"Resturant not found"});
+        if(!restaurant){
+            res.status(404).json({message:"Restaurant not found"});
             return;
         }
     } catch (error) {
@@ -79,16 +79,16 @@ const getResturantBySlug=async(req,res)=>{
     }
 };
 
-const getResturantAvailability=async(req,res)=>{
+const getRestaurantAvailability=async(req,res)=>{
     try {
         const {date}=req.query;
         if(!date){
             res.status(400).json({message:"please provide a date"});
             return;
         }
-    const resturant=await Resturant.findById(req.params.id);
+    const restaurant=await Restaurant.findById(req.params.id);
     if(!resturant){
-        res.status(404).json({message:"Resturant not found"})
+        res.status(404).json({message:"Restaurant not found"})
         return;
     }
     const bookingDate=new Date().toLocaleString;
@@ -96,12 +96,13 @@ const getResturantAvailability=async(req,res)=>{
 //Get all active bookings on this date for the restaurant;
     const bookings=await Booking.find({
         restaurant:restaurant._id,
-        date:bookingDate,
+        // date:Date,
+        date: new Date(date),
         status:"confirmed",
     })
 
     //map slots to available capacities
-    const availablity=resturant.availableSlots.map((slot)=>{
+    const availablity=restaurant.availableSlots.map((slot)=>{
         const bookedSeats = bookingDate.filter((b)=>b.time===slot).reduce((sum,b)=>sum+b.guests,0)
 
         const totalSeats=restaurant.totalSeats || 20;
@@ -123,8 +124,8 @@ const getResturantAvailability=async(req,res)=>{
 };
 
 module.exports={
-getResturants,
-getFeatureResturants,
-getResturantBySlug,
-getResturantAvailability,
+getRestaurants,
+getFeatureRestaurants,
+getRestaurantBySlug,
+getRestaurantAvailability,
 }
