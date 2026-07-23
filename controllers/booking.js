@@ -57,10 +57,7 @@ async function createBooking(req,res){
         //populate resturant info before returning
         const populatedBooking= await booking.populate("restaurant","name location image address");
         res.status(201).json(populatedBooking);
-
       }
-
-
 
     } catch (error) {
         console.error(error);
@@ -68,18 +65,20 @@ async function createBooking(req,res){
     }
 }
 
+
+
 //Get logged in user bookings
 //GET /mybookings
 //@access private
 async function getMyBookings(req,res){
     try {
-        const bookings=(await Booking.find({user:req.user?._id})
-        .populate("restaurant","name,location image address slug")).sort({date:-1,time:-1});
+        const bookings=await Booking.find({user:req.user?._id})
+        .populate("restaurant","name,location image address slug").sort({date:-1,time:-1});
         res.json(bookings);
     } catch (error) {
         console.error(error);
         res.status(500).json({message:error.message});
-    }
+    } 
 }
 
 //Cancel booking
