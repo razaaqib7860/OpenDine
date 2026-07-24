@@ -59,16 +59,21 @@ const ResturantSchema=new mongoose.Schema({
 
     pincode:String,
 
+    // location:{
+    //     type:{
+    //         type:String,
+    //         enum:["Point"],
+    //         default:"Point"
+    //     },
+    //     coordinates:{
+    //         type:[Number], // [longitude, latitude]
+    //         required:true
+    //     }
+    // },
+
     location:{
-        type:{
-            type:String,
-            enum:["Point"],
-            default:"Point"
-        },
-        coordinates:{
-            type:[Number], // [longitude, latitude]
-            required:true
-        }
+    type:String,
+    required:true
     },
 
     openingTime:{

@@ -29,8 +29,9 @@ async function createOwnerRestaurant(req,res){
            return res.status(400).json({message:"you already have a restaurant registered"});
         }
 
-        const {name,description,cuisine,priceRange,location,address,chef,tags,availableSlots,totalSeats}=req.body;
-        if(!name||!description||!cuisine ||!priceRange ||!location ||!address ||!chef ||!tags ||!availableSlots ||!totalSeats){
+        const {name,description,cuisine,priceRange,location,address,chef,tags,availableSlots,totalSeats,openingTime,closingTime,totalTables,}=req.body;
+        console.log(req.body);
+        if(!name||!description||!cuisine ||!priceRange ||!location ||!address ||!chef ||!tags ||!availableSlots ||!totalSeats||!openingTime||!closingTime||!totalTables){
            return res.status(400).json({message:"please provide all required fields"})
         }
 
@@ -47,7 +48,10 @@ async function createOwnerRestaurant(req,res){
             //handel image upload
         }
 
-        //setup parsed tags and slots
+        //setup parsed cuisine, tags and slots
+        const parsedCuisine = typeof cuisine ==="string"? cuisine.split(",").map((c)=>c.trim()):
+        cuisine||[];
+
         const parsedTags = typeof tags ==="string"? tags.split(",").map((t)=>t.trim()):
         tags||[];
 
@@ -59,15 +63,18 @@ async function createOwnerRestaurant(req,res){
             name,
             slug,
             description,
-            cuisine,
+            cuisine: parsedCuisine,
             priceRange,
             location,
             address,
             chef,
-            image:imageUrl,
+            images:imageUrl ? [imageUrl] : [],
             tags: parsedTags,
             availableSlots: parsedSlots,
             totalSeats:totalSeats ? Number(totalSeats): 20,
+            openingTime,
+            closingTime,
+            totalTables,
             owner:req.user?._id,
             status:"pending"
         })

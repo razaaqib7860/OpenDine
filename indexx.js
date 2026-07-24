@@ -3,6 +3,7 @@ require("dotenv").config(); //it
 
 const express=require("express");
 const app=express();
+const cors = require("cors");
 
 const cookieParser=require("cookie-parser");
 const {checkAuth,restrictTo}=require("./middleware/auth");
@@ -10,6 +11,15 @@ const {checkAuth,restrictTo}=require("./middleware/auth");
 const connectMongoDB=require("./connection");
 connectMongoDB(process.env.MONGO_URL);
 
+//middleware
+app.use(
+  cors({
+    origin: "https://upgraded-guide-r4qvwxr59jprcxr97-8080.app.github.dev", //frontend URL
+    credentials: true,
+  })
+);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //routes require
 const home=require("./routes/home");
@@ -42,8 +52,11 @@ app.use("/",home);
 app.use("/user",user); 
 app.use("/restaurants",restaurant);
 app.use("/bookings",booking); 
-app.use("/owner",restrictTo(['owner','admin']),owner);
-app.use("/admin",restrictTo(['admin']),admin);
+// app.use("/owner",restrictTo(['owner','admin']),owner);
+// app.use("/owner",owner);
+app.use("/admin",restrictTo(["admin"]),admin);
+app.use("/admin",admin);
+
 
 //port
 const PORT = process.env.PORT || 2340;
