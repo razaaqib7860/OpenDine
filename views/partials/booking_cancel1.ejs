@@ -1,0 +1,142 @@
+<!-- LUXURY CANCELLATION CONFIRMATION MODAL OVERLAY -->
+<div id="cancel-modal-overlay" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+    
+    <!-- MODAL CARD CONTAINER -->
+    <div id="cancel-modal-card" class="w-full max-w-lg bg-dark-900/95 border border-gold-400/30 rounded-3xl p-6 md:p-8 flex flex-col justify-between transform scale-90 transition-all duration-300 ease-out shadow-2xl space-y-6 relative overflow-hidden">
+        
+        <!-- Background Ambient Accent Glow -->
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-red-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 text-sm">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <span class="text-[10px] uppercase tracking-[0.25em] text-gold-400 font-semibold">Concierge Action</span>
+                    <h3 class="font-serif text-xl text-white">Cancel Reservation</h3>
+                </div>
+            </div>
+            <button id="modal-close-btn" type="button" class="w-8 h-8 rounded-full bg-dark-800 border border-white/10 text-gray-400 hover:text-white hover:border-gold-400/50 flex items-center justify-center transition-all">
+                <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+        </div>
+
+        <!-- Reservation Context Card -->
+        <div class="glass-panel p-5 rounded-2xl border border-white/10 space-y-3.5">
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider flex items-center">
+                    <i class="fa-solid fa-utensils text-gold-400 w-5"></i> Restaurant
+                </span>
+                <span id="modal-res-name" class="text-white font-serif font-semibold text-sm truncate max-w-[200px]">
+                    —
+                </span>
+            </div>
+            
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider flex items-center">
+                    <i class="fa-regular fa-calendar text-gold-400 w-5"></i> Date
+                </span>
+                <span id="modal-res-date" class="text-white font-semibold">—</span>
+            </div>
+
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider flex items-center">
+                    <i class="fa-regular fa-clock text-gold-400 w-5"></i> Time
+                </span>
+                <span id="modal-res-time" class="text-gold-400 font-semibold">—</span>
+            </div>
+
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider flex items-center">
+                    <i class="fa-solid fa-user-group text-gold-400 w-5"></i> Party Size
+                </span>
+                <span id="modal-res-guests" class="text-white font-semibold">—</span>
+            </div>
+        </div>
+
+        <!-- Warning Callout Box -->
+        <div class="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-start space-x-3">
+            <i class="fa-solid fa-circle-exclamation text-red-400 text-sm mt-0.5 flex-shrink-0"></i>
+            <p class="text-xs text-red-200 leading-relaxed">
+                <strong class="font-semibold text-red-300">Warning:</strong> This reservation will be permanently cancelled. Your held table slot and associated concierge deposit will be released immediately.
+            </p>
+        </div>
+
+        <!-- Form Submission & Action Buttons -->
+        <form id="modal-cancel-form" method="POST" action="" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <button id="modal-keep-btn" type="button" class="w-full py-3.5 rounded-full bg-gradient-to-r from-gold-500 to-gold-400 text-black font-semibold text-xs uppercase tracking-widest hover:from-gold-400 hover:to-gold-300 transition-all duration-300 shadow-lg shadow-gold-500/10">
+                Keep Reservation
+            </button>
+            <button type="submit" class="w-full py-3.5 rounded-full border border-red-500/40 bg-red-500/10 text-red-400 font-semibold text-xs uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all duration-300">
+                Cancel Reservation
+            </button>
+        </form>
+
+    </div>
+</div>
+
+<!-- CLIENT VANILLA JAVASCRIPT LOGIC -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modalOverlay = document.getElementById('cancel-modal-overlay');
+        const modalContainer = document.getElementById('cancel-modal-card');
+        const closeBtn = document.getElementById('modal-close-btn');
+        const keepBtn = document.getElementById('modal-keep-btn');
+        const cancelForm = document.getElementById('modal-cancel-form');
+
+        // Dynamic Text Fields inside Modal
+        const resName = document.getElementById('modal-res-name');
+        const resDate = document.getElementById('modal-res-date');
+        const resTime = document.getElementById('modal-res-time');
+        const resGuests = document.getElementById('modal-res-guests');
+
+        /**
+         * Global Helper Function to trigger Modal
+         * Call this from any button: openCancelModal({ id, name, date, time, guests })
+         */
+        window.openCancelModal = function(bookingData) {
+            if (!bookingData) return;
+
+            // Populate Modal Data
+            resName.textContent = bookingData.name || 'Exclusive Establishment';
+            resDate.textContent = bookingData.date || '—';
+            resTime.textContent = bookingData.time || '—';
+            resGuests.textContent = `${bookingData.guests || 2} Guest(s)`;
+
+            // Dynamically set form action endpoint
+            if (cancelForm && bookingData.id) {
+                cancelForm.action = `/bookings/cancel/${bookingData.id}`;
+            }
+
+            // Show Modal with smooth entrance animation
+            modalOverlay.classList.remove('hidden');
+            setTimeout(() => {
+                modalOverlay.classList.remove('opacity-0');
+                modalContainer.classList.remove('scale-90');
+                modalContainer.classList.add('scale-100');
+            }, 10);
+        };
+
+        // Close Modal Function
+        function closeModal() {
+            modalContainer.classList.remove('scale-100');
+            modalContainer.classList.add('scale-90');
+            modalOverlay.classList.add('opacity-0');
+            
+            setTimeout(() => {
+                modalOverlay.classList.add('hidden');
+            }, 300);
+        }
+
+        // Event Listeners for closing
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        if (keepBtn) keepBtn.addEventListener('click', closeModal);
+        if (modalOverlay) {
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) closeModal();
+            });
+        }
+    });
+</script>

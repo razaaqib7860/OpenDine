@@ -1,25 +1,39 @@
 const express = require("express");
 const router = express.Router();   
 
-const { getOwnerRestaurant,
+const { ownerDashboard,
+    getOwnerRestaurant,
     createOwnerRestaurant,
     updateOwnerRestaurant,
     getOwnerBookings,
     updateBookingStatus} =require("../controllers/owner");
 
-// router.get("/dashboard",getOwnerRestaurant);
+const {checkAuth,restrictTo}=require("../middleware/auth");
 
-router.get("/dashboard", (req, res) => {
-    return res.render("owner");
-});
+router.get("/dashboard",ownerDashboard);
 
-router.post("/",createOwnerRestaurant); //middle ware for image upload
+router.get("/",checkAuth,getOwnerRestaurant);
 
-router.put("/",updateOwnerRestaurant);  //middle ware for image upload
+// router.post("/",createOwnerRestaurant); //middle ware for image upload
+const upload = require("../middleware/upload");
+router.post(
+    "/",
+    checkAuth,
+    upload.array("images"),
+    createOwnerRestaurant
+);
 
-router.get("/bookings",getOwnerBookings);
+// router.put("/",updateOwnerRestaurant);  //middle ware for image upload
+router.put(
+    "/",
+    checkAuth,
+    upload.array("images"),
+    updateOwnerRestaurant
+);
 
-router.put("/bookings/status/:id",updateBookingStatus);
+router.get("/bookings",checkAuth,getOwnerBookings);
+
+router.put("/bookings/status/:id",checkAuth,updateBookingStatus);
 
 
 module.exports = router;

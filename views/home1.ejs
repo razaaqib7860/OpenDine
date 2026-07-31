@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenDine - Exquisite Dining Experiences</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+
+    <!-- Background Slideshow Container -->
+       <div class="hero-background"></div>
+
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="nav-left">
+            <!-- Clicking Logo redirects to home route -->
+            <a href="/" class="logo-link">
+                <div class="logo">
+                    <i class="fa-solid fa-bell-concierge"></i> OpenDine
+                </div>
+            </a>
+            <nav class="nav-links">
+                <a href="/discover" class="active">Discover</a>
+                <a href="/restaurants">Restaurants</a>
+                <a href="/bookings/myBookings">My Bookings</a>
+            </nav>
+        </div>
+
+
+        <div class="nav-right">
+            <% if (locals.user) { %>
+                <!-- Show Profile Button & Dropdown Plate if User is Logged In -->
+              <button class="profile-trigger" id="profileTriggerBtn">
+    <div class="avatar">
+        <%= user && user.Name ? user.Name.charAt(0).toUpperCase() : "U" %>
+    </div>
+
+    <span>
+        <%= user && user.Name ? user.Name : "User" %>
+    </span>
+</button>
+
+                <!-- Dropdown Menu -->
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="user-info">
+                        <h4><%= user.Name %></h4>
+                        <p><%= user.email %></p>
+                    </div>
+                    <hr>
+                    <a href="/bookings/myBookings" class="dropdown-item">
+                        <i class="fa-regular fa-calendar-check"></i> My Bookings
+                    </a>
+                    <a href="/owner/dashboard" class="dropdown-item">
+                        <i class="fa-shield-halved"></i> Owner Panel
+                    </a>
+                    <hr>
+
+                    <form action="/user/logout" method="POST" class="logout-form">
+                     <button type="submit" class="dropdown-item logout">
+                       <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                            </button>
+                        </form>
+                </div>
+            <% } else { %>
+                <!-- Show Login Button if User is Not Logged In -->
+                <a href="/user/login" class="login-btn">Login / Sign Up</a>
+            <% } %>
+        </div>
+    </header>
+
+    <!-- Hero Content -->
+    <main class="hero-section">
+        <div class="hero-content">
+            <p class="subtitle">EXQUISITE DINING EXPERIENCES</p>
+            <h1 class="main-heading">Curation for the<br>Discerning Palette</h1>
+        </div>
+
+        <!-- Search / Widget Bar -->
+        <div class="search-widget">
+            <div class="input-group">
+                <i class="fa-solid fa-magnifying-glass icon"></i>
+                <input type="text" placeholder="Search cuisines, restaurants...">
+            </div>
+            <div class="input-group border-left">
+                <i class="fa-solid fa-location-dot icon"></i>
+                <input type="text" placeholder="Location (e.g. Hyderabad)">
+            </div>
+            <div class="input-group border-left">
+                <i class="fa-regular fa-calendar icon"></i>
+                <input type="date",name="date">
+            </div>
+            <div class="input-group border-left">
+                <i class="fa-solid fa-user-group icon"></i>
+                <select>
+                    <option>1 Guest</option>
+                    <option selected>2 Guests</option>
+                    <option>3 Guests</option>
+                    <option>4+ Guests</option>
+                </select>
+            </div>
+
+           <a href="/restaurants" class="search-btn">
+    FIND A TABLE
+</a>
+        </div>
+    </main>
+
+    <script src="/js/home.js"></script>
+</body>
+</html>

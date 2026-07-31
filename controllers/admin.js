@@ -2,11 +2,59 @@ const Restaurant = require("../models/restaurant");
 const Booking = require("../models/booking");
 const User = require("../models/user");
 
+
+//render dashboard
+//GET //admin/dashboard
+async function renderAdminDashboard(req, res) {
+    try {
+
+        const restaurants = await Restaurant.find({})
+            .populate("owner", "Name email phone")
+            .sort({ createdAt: -1 });
+
+        const totalUsers = await User.countDocuments({ role: "user" });
+        const totalOwners = await User.countDocuments({ role: "owner" });
+        const totalBookings = await Booking.countDocuments({});
+        const totalRestaurants = await Restaurant.countDocuments({});
+
+        const latestBookings = await Booking.find({})
+            .populate("user", "Name email")
+            .populate("restaurant", "name")
+            .sort({ createdAt: -1 })
+            .limit(10);
+
+        const stats = {
+            user: {
+                totalUsers,
+                totalOwners,
+                total: totalUsers + totalOwners,
+            },
+            restaurants: {
+                total: totalRestaurants,
+            },
+            bookings: {
+                total: totalBookings,
+            }
+        };
+
+        res.render("admin-dashboard", {
+            user: req.user,
+            restaurants,
+            latestBookings,
+            stats
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err.message);
+    }
+}
+
 //Get all restaurant for admin management
 //GET //amdin/restaurant
 async function getAllRestaurant(req,res){
 try {
-    const restaurant=(await Restaurant.find({}).populate("owner","name email phone")).toSorted({createdAt:-1})
+    const restaurant=(await Restaurant.find({}).populate("owner","name email phone").sort({createdAt:-1}))
     res.json(restaurant);
 
 } catch (error) {
@@ -17,7 +65,6 @@ try {
 
 // approved/reject a restaurant status
 //PUT //amdin/approve/:id
-
 async function approveRestaurant(req,res){
 try {
     const {status}=req.body;
@@ -61,7 +108,7 @@ try {
             total: totalUsers+totalOwners,
         },
         restaurants:{
-            total:totalRestaurants,
+            total:totalRestaurant,
         },
         bookings:{
             total:totalBooking,
@@ -75,6 +122,7 @@ try {
 }
 
 module.exports={
+    renderAdminDashboard,
     getAllRestaurant,
     approveRestaurant,
     getAdminStats,

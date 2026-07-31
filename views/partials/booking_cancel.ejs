@@ -1,0 +1,115 @@
+<!-- BOOKING CANCEL MODAL -->
+<div id="booking-cancel-modal-overlay" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+    <div id="booking-cancel-modal-card" class="w-full max-w-lg bg-dark-900/95 border border-gold-400/30 rounded-3xl p-6 sm:p-8 flex flex-col justify-between transform scale-90 transition-all duration-300 ease-out shadow-2xl space-y-6 relative overflow-hidden">
+        
+        <!-- Ambient Red Glow -->
+        <div class="absolute -top-20 -right-20 w-40 h-40 bg-red-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 text-sm">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <span class="text-[10px] uppercase tracking-[0.25em] text-gold-400 font-semibold">Concierge Action</span>
+                    <h3 class="font-serif text-xl text-white">Cancel Reservation?</h3>
+                </div>
+            </div>
+            <button id="close-cancel-modal-btn" type="button" class="w-8 h-8 rounded-full bg-dark-800 border border-white/10 text-gray-400 hover:text-white hover:border-gold-400/50 flex items-center justify-center transition-all">
+                <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+        </div>
+
+        <p class="text-xs text-gray-300">Are you sure you want to cancel this reservation?</p>
+
+        <!-- Booking Data Context -->
+        <div class="glass-panel p-5 rounded-2xl border border-white/10 space-y-3">
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider">Booking ID</span>
+                <span id="cancel-modal-booking-id" class="text-gray-200 font-mono font-semibold">#—</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider">Restaurant</span>
+                <span id="cancel-modal-restaurant-name" class="text-white font-serif font-semibold text-sm truncate max-w-[200px]">—</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider">Date</span>
+                <span id="cancel-modal-date" class="text-white font-semibold">—</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider">Time</span>
+                <span id="cancel-modal-time" class="text-gold-400 font-semibold">—</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider">Guests</span>
+                <span id="cancel-modal-guests" class="text-white font-semibold">—</span>
+            </div>
+        </div>
+
+        <!-- Form Submission -->
+        <form id="cancel-booking-form" method="POST" action="" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <button type="submit" class="w-full py-3.5 rounded-full border border-red-500/40 bg-red-500/10 text-red-400 font-semibold text-xs uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all duration-300">
+                Cancel Reservation
+            </button>
+            <button type="button" id="keep-booking-btn" class="w-full py-3.5 rounded-full bg-gradient-to-r from-gold-500 to-gold-400 text-black font-semibold text-xs uppercase tracking-widest hover:from-gold-400 hover:to-gold-300 transition-all duration-300 shadow-lg shadow-gold-500/10">
+                Keep Booking
+            </button>
+        </form>
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const overlay = document.getElementById('booking-cancel-modal-overlay');
+        const card = document.getElementById('booking-cancel-modal-card');
+        const closeBtn = document.getElementById('close-cancel-modal-btn');
+        const keepBtn = document.getElementById('keep-booking-btn');
+        const cancelForm = document.getElementById('cancel-booking-form');
+
+        window.openBookingCancelModal = function(booking) {
+            if (!booking) return;
+
+            document.getElementById('cancel-modal-booking-id').textContent = '#' + (booking.id || booking._id || 'N/A');
+            // document.getElementById('cancel-modal-restaurant-name').textContent = booking.restaurantName || "<%= restaurant.name %>";
+            document.getElementById("cancel-modal-restaurant-name").textContent =
+             booking.restaurantName ||
+             booking.restaurant?.name ||
+             "Unknown Restaurant";
+            
+            document.getElementById('cancel-modal-date').textContent = booking.date || '—';
+            document.getElementById('cancel-modal-time').textContent = booking.time || '—';
+            document.getElementById('cancel-modal-guests').textContent = `${booking.guests || 1} Guest(s)`;
+
+            const bookingId = booking.id || booking._id;
+            if (cancelForm && bookingId) {
+                cancelForm.action = `/bookings/cancel/${bookingId}?_method=PUT`;
+            }
+
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                card.classList.remove('scale-90');
+                card.classList.add('scale-100');
+            }, 10);
+        };
+
+        function closeCancelModal() {
+            card.classList.remove('scale-100');
+            card.classList.add('scale-90');
+            overlay.classList.add('opacity-0');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300);
+        }
+
+        if (closeBtn) closeBtn.addEventListener('click', closeCancelModal);
+        if (keepBtn) keepBtn.addEventListener('click', closeCancelModal);
+        if (overlay) {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeCancelModal();
+            });
+        }
+    });
+</script>

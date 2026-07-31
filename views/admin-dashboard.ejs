@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenDine Administration — Executive Command Portal</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Pro / Free -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            100: '#FDF8EC',
+                            300: '#E2C285',
+                            400: '#D4AF37',
+                            500: '#C59B27',
+                            600: '#A37E1C',
+                        },
+                        dark: {
+                            900: '#0B0C0E',
+                            800: '#121418',
+                            700: '#1C1F26',
+                            600: '#2A2E39',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Backdrop Blur Glassmorphism */
+        .glass-panel {
+            background: rgba(18, 20, 24, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        /* Gold Gradient Text */
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF0CA 0%, #D4AF37 50%, #996515 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0C0E;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A2E39;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-gray-200 font-sans antialiased overflow-x-hidden selection:bg-gold-400 selection:text-black min-h-screen flex flex-col justify-between">
+
+    <!-- NAVBAR -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 glass-panel border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <a href="/" class="flex items-center space-x-3 group">
+                    <span class="w-10 h-10 rounded-full border border-gold-400/40 flex items-center justify-center bg-dark-800 text-gold-400 text-lg font-serif font-bold group-hover:border-gold-400 transition-colors">
+                        O
+                    </span>
+                    <span class="font-serif text-2xl tracking-widest text-white font-semibold uppercase">
+                        Open<span class="text-gold-400">Dine</span>
+                    </span>
+                </a>
+                <span class="text-xs uppercase tracking-[0.25em] text-gold-400 font-semibold hidden md:inline-block border-l border-white/10 pl-6">
+                    Executive Control
+                </span>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <a href="/admin/dashboard" class="text-xs font-semibold uppercase tracking-widest text-gold-400">Dashboard</a>
+                <a href="/restaurants" class="text-xs font-semibold uppercase tracking-widest text-gray-400 hover:text-white transition-colors">Restaurants</a>
+                <a href="/users" class="text-xs font-semibold uppercase tracking-widest text-gray-400 hover:text-white transition-colors">Users</a>
+
+                <% if (locals.user) { %>
+                    <div class="relative" id="user-menu-container">
+                        <button id="user-menu-btn" class="flex items-center space-x-3 focus:outline-none group p-1.5 rounded-full border border-gold-400/20 hover:border-gold-400 transition-all">
+                            <img src="<%= user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150' %>" 
+                                 alt="<%= user.Name %>" 
+                                 class="w-8 h-8 rounded-full object-cover border border-gold-400/50">
+                            <span class="hidden sm:inline text-xs font-medium uppercase tracking-wider text-gray-200 group-hover:text-gold-400 transition-colors">
+                                <%= user.Name %>
+                            </span>
+                            <i class="fa-solid fa-chevron-down text-xs text-gold-400 px-2 transition-transform duration-300" id="dropdown-arrow"></i>
+                        </button>
+
+                        <div id="user-dropdown" class="hidden absolute right-0 mt-3 w-56 glass-panel rounded-xl shadow-2xl py-2 z-50 transform opacity-0 scale-95 transition-all duration-200">
+                            <div class="px-4 py-3 border-b border-white/10">
+                                <p class="text-xs text-gold-400 font-semibold uppercase tracking-wider">System Administrator</p>
+                                <p class="text-sm font-semibold text-white truncate"><%= user.email %></p>
+                            </div>
+                            <a href="/profile" class="flex items-center px-4 py-2.5 text-xs text-gray-300 hover:bg-gold-400/10 hover:text-gold-400 transition-colors">
+                                <i class="fa-regular fa-user w-5"></i> Profile
+                            </a>
+                            <a href="/user/logout" class="flex items-center px-4 py-2.5 text-xs text-red-400 hover:bg-red-500/10 transition-colors border-t border-white/10">
+                                <i class="fa-solid fa-arrow-right-from-bracket w-5"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-28 pb-20 max-w-7xl mx-auto px-6 lg:px-12 w-full flex-grow space-y-16">
+
+        <% 
+            const totalUsersCount = (stats && stats.user) ? (stats.user.totalUsers || 0) : 0;
+            const totalOwnersCount = (stats && stats.user) ? (stats.user.totalOwners || 0) : 0;
+            const totalAccounts = (stats && stats.user) ? (stats.user.total || (totalUsersCount + totalOwnersCount)) : 0;
+            
+            const totalRestaurantsCount = (stats && stats.restaurants) ? (stats.restaurants.total || 0) : 0;
+            const totalBookingsCount = (stats && stats.bookings) ? (stats.bookings.total || 0) : 0;
+
+            const pendingRestaurants = restaurants ? restaurants.filter(r => r.status === 'pending') : [];
+            const approvedRestaurants = restaurants ? restaurants.filter(r => r.status === 'approved') : [];
+            const rejectedRestaurants = restaurants ? restaurants.filter(r => r.status === 'rejected') : [];
+        %>
+
+        <!-- SECTION 1: LUXURY HERO & METRIC COUNTERS -->
+        <section class="space-y-8 hero-section-anim">
+            <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-white/10 pb-8 gap-4">
+                <div>
+                    <span class="text-xs uppercase tracking-[0.3em] text-gold-400 font-semibold px-3 py-1 rounded-full border border-gold-400/30 glass-panel">
+                        System Overview
+                    </span>
+                    <h1 class="font-serif text-4xl sm:text-5xl font-normal text-white mt-4">
+                        OpenDine <span class="italic gold-gradient-text">Administration</span>
+                    </h1>
+                </div>
+                <p class="text-xs text-gray-400 max-w-md leading-relaxed">
+                    Centralized platform governance, partner restaurant verification, and platform transaction analytics.
+                </p>
+            </div>
+
+            <!-- Animated Metric Cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
+                <div class="glass-panel p-5 rounded-2xl border border-white/10 space-y-2">
+                    <span class="text-[10px] uppercase tracking-widest text-gray-400 block font-semibold">Total Users</span>
+                    <p class="font-serif text-2xl text-white font-bold counter" data-target="<%= totalUsersCount %>">0</p>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl border border-white/10 space-y-2">
+                    <span class="text-[10px] uppercase tracking-widest text-gray-400 block font-semibold">Total Owners</span>
+                    <p class="font-serif text-2xl text-white font-bold counter" data-target="<%= totalOwnersCount %>">0</p>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl border border-white/10 space-y-2">
+                    <span class="text-[10px] uppercase tracking-widest text-gray-400 block font-semibold">Restaurants</span>
+                    <p class="font-serif text-2xl text-gold-400 font-bold counter" data-target="<%= totalRestaurantsCount %>">0</p>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl border border-white/10 space-y-2">
+                    <span class="text-[10px] uppercase tracking-widest text-gray-400 block font-semibold">Reservations</span>
+                    <p class="font-serif text-2xl text-white font-bold counter" data-target="<%= totalBookingsCount %>">0</p>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl border border-amber-500/30 bg-amber-500/5 space-y-2">
+                    <span class="text-[10px] uppercase tracking-widest text-amber-400 block font-semibold">Pending</span>
+                    <p class="font-serif text-2xl text-amber-400 font-bold counter" data-target="<%= pendingRestaurants.length %>">0</p>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 space-y-2">
+                    <span class="text-[10px] uppercase tracking-widest text-emerald-400 block font-semibold">Approved</span>
+                    <p class="font-serif text-2xl text-emerald-400 font-bold counter" data-target="<%= approvedRestaurants.length %>">0</p>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl border border-red-500/30 bg-red-500/5 space-y-2">
+                    <span class="text-[10px] uppercase tracking-widest text-red-400 block font-semibold">Rejected</span>
+                    <p class="font-serif text-2xl text-red-400 font-bold counter" data-target="<%= rejectedRestaurants.length %>">0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: QUICK ACTIONS -->
+        <section class="space-y-4 quick-actions-anim">
+            <h2 class="text-xs uppercase tracking-[0.25em] text-gold-400 font-semibold">Executive Shortcuts</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <a href="#approval-table" onclick="filterByStatus('pending')" class="glass-panel p-5 rounded-2xl border border-white/10 hover:border-gold-400/50 transition-all group flex items-center space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-hourglass-half text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-white group-hover:text-gold-400 transition-colors">Approve Pending</h4>
+                        <p class="text-[10px] text-gray-400"><%= pendingRestaurants.length %> waiting review</p>
+                    </div>
+                </a>
+
+                <a href="/admin/restaurants" class="glass-panel p-5 rounded-2xl border border-white/10 hover:border-gold-400/50 transition-all group flex items-center space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-utensils text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-white group-hover:text-gold-400 transition-colors">Manage Establishments</h4>
+                        <p class="text-[10px] text-gray-400"><%= totalRestaurantsCount %> listed overall</p>
+                    </div>
+                </a>
+
+                <a href="/admin/owners" class="glass-panel p-5 rounded-2xl border border-white/10 hover:border-gold-400/50 transition-all group flex items-center space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-user-tie text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-white group-hover:text-gold-400 transition-colors">Manage Owners</h4>
+                        <p class="text-[10px] text-gray-400"><%= totalOwnersCount %> partner accounts</p>
+                    </div>
+                </a>
+
+                <a href="/admin/users" class="glass-panel p-5 rounded-2xl border border-white/10 hover:border-gold-400/50 transition-all group flex items-center space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-users text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-white group-hover:text-gold-400 transition-colors">Manage Users</h4>
+                        <p class="text-[10px] text-gray-400"><%= totalUsersCount %> registered patrons</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- SECTION 2: RESTAURANT APPROVAL TABLE -->
+        <section id="approval-table" class="space-y-6 approval-section-anim">
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-white/10 pb-4">
+                <div>
+                    <span class="text-xs uppercase tracking-[0.25em] text-gold-400 font-semibold">Verification Desk</span>
+                    <h2 class="font-serif text-2xl text-white mt-1">Restaurant Approvals & Governance</h2>
+                </div>
+
+                <!-- Filter & Search Controls -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Status Filter Tabs -->
+                    <div class="flex items-center p-1 bg-dark-800 rounded-full border border-white/10 text-xs">
+                        <button type="button" onclick="filterByStatus('all')" class="status-tab-btn px-4 py-1.5 rounded-full text-gold-400 font-semibold bg-gold-400/10 transition-all" data-status="all">All</button>
+                        <button type="button" onclick="filterByStatus('pending')" class="status-tab-btn px-4 py-1.5 rounded-full text-gray-400 hover:text-white transition-all" data-status="pending">Pending (<%= pendingRestaurants.length %>)</button>
+                        <button type="button" onclick="filterByStatus('approved')" class="status-tab-btn px-4 py-1.5 rounded-full text-gray-400 hover:text-white transition-all" data-status="approved">Approved</button>
+                        <button type="button" onclick="filterByStatus('rejected')" class="status-tab-btn px-4 py-1.5 rounded-full text-gray-400 hover:text-white transition-all" data-status="rejected">Rejected</button>
+                    </div>
+
+                    <!-- Search Input -->
+                    <input type="text" id="restaurant-search" placeholder="Search name, owner, cuisine..." 
+                           class="bg-dark-800 border border-white/10 text-xs text-white rounded-full px-4 py-2 focus:outline-none focus:border-gold-400 w-48 sm:w-60 placeholder-gray-500">
+
+                    <!-- Sort -->
+                    <select id="restaurant-sort" onchange="sortRestaurants()" class="bg-dark-800 border border-white/10 text-xs text-white rounded-full px-4 py-2 focus:outline-none focus:border-gold-400 cursor-pointer">
+                        <option value="newest">Sort: Newest</option>
+                        <option value="rating">Sort: Highest Rating</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-gray-300">
+                        <thead class="bg-dark-800/80 text-gold-400 uppercase tracking-widest text-[10px] border-b border-white/10">
+                            <tr>
+                                <th class="p-4 pl-6">Establishment</th>
+                                <th class="p-4">Owner Profile</th>
+                                <th class="p-4">Cuisine / Location</th>
+                                <th class="p-4">Rating</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 pr-6 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5" id="restaurant-table-body">
+                            <% if (restaurants && restaurants.length > 0) { %>
+                                <% restaurants.forEach(res => { %>
+                                    <% 
+                                        const resImg = (res.images && res.images.length > 0) ? res.images[0] : 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&q=80&w=300';
+                                        const ownerName = (res.owner && res.owner.Name) ? res.owner.Name : 'Unassigned';
+                                        const ownerEmail = (res.owner && res.owner.email) ? res.owner.email : 'N/A';
+                                        const ownerPhone = (res.owner && res.owner.phone) ? res.owner.phone : '';
+                                        const createdTime = new Date(res.createdAt || Date.now()).getTime();
+                                    %>
+                                    <tr class="hover:bg-white/[0.02] transition-colors res-row" 
+                                        data-status="<%= (res.status || 'pending').toLowerCase() %>"
+                                        data-created="<%= createdTime %>"
+                                        data-rating="<%= res.averageRating || 0 %>"
+                                        data-search="<%= (res.name || '').toLowerCase() %> <%= ownerName.toLowerCase() %> <%= ownerEmail.toLowerCase() %> <%= (res.cuisine || []).join(' ').toLowerCase() %> <%= (res.location || '').toLowerCase() %>">
+                                        
+                                        <!-- Restaurant Details -->
+                                        <td class="p-4 pl-6">
+                                            <div class="flex items-center space-x-3">
+                                                <img src="<%= resImg %>" alt="<%= res.name %>" class="w-12 h-12 rounded-xl object-cover border border-gold-400/30 flex-shrink-0">
+                                                <div>
+                                                    <a href="/restaurants/<%= res.slug %>" target="_blank" class="font-serif text-sm font-semibold text-white hover:text-gold-400 transition-colors">
+                                                        <%= res.name %>
+                                                    </a>
+                                                    <% if(res.chef) { %>
+                                                        <p class="text-[10px] text-gold-300/80"><i class="fa-solid fa-hat-chef mr-1"></i>Chef <%= res.chef %></p>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Owner Info -->
+                                        <td class="p-4">
+                                            <p class="font-semibold text-white"><%= ownerName %></p>
+                                            <p class="text-[10px] text-gray-400"><%= ownerEmail %></p>
+                                            <% if(ownerPhone) { %>
+                                                <p class="text-[10px] text-gold-400/80"><i class="fa-solid fa-phone text-[8px] mr-1"></i><%= ownerPhone %></p>
+                                            <% } %>
+                                        </td>
+
+                                        <!-- Cuisine & Location -->
+                                        <td class="p-4">
+                                            <p class="text-white"><%= res.cuisine.join(", ") || 'Fine Dining' %></p>
+                                            <p class="text-[10px] text-gray-400"><i class="fa-solid fa-location-dot text-gold-400 mr-1"></i><%= res.location %></p>
+                                        </td>
+
+                                        <!-- Rating -->
+                                        <td class="p-4">
+                                            <span class="text-gold-400 font-semibold flex items-center">
+                                                <i class="fa-solid fa-star mr-1"></i> <%= res.averageRating || '4.9' %>
+                                            </span>
+                                            <span class="text-[9px] text-gray-500">(<%= res.totalReviews || 0 %> reviews)</span>
+                                        </td>
+
+                                        <!-- Status Badge -->
+                                        <td class="p-4">
+                                            <% if (res.status === 'approved') { %>
+                                                <span class="px-3 py-1 rounded-full text-[10px] uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-semibold">
+                                                    Approved
+                                                </span>
+                                            <% } else if (res.status === 'rejected') { %>
+                                                <span class="px-3 py-1 rounded-full text-[10px] uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/40 font-semibold">
+                                                    Rejected
+                                                </span>
+                                            <% } else { %>
+                                                <span class="px-3 py-1 rounded-full text-[10px] uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-500/40 font-semibold animate-pulse">
+                                                    Pending Review
+                                                </span>
+                                            <% } %>
+                                        </td>
+
+                                        <!-- Action Form Buttons -->
+                                        <td class="p-4 pr-6 text-right">
+                                            <div class="flex items-center justify-end space-x-2">
+                                                <% if (res.status !== 'approved') { %>
+                                                    <form action="/admin/restaurants/<%= res._id %>/approve?_method=PUT" method="POST" class="inline">
+                                                        <button type="submit" title="Approve Establishment" class="px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500 hover:text-white font-semibold text-[10px] uppercase tracking-wider transition-all">
+                                                            Approve
+                                                        </button>
+                                                    </form>
+                                                <% } %>
+
+                                                <% if (res.status !== 'rejected') { %>
+                                                    <form action="/admin/restaurants/<%= res._id %>/reject?_method=PUT" method="POST" class="inline" onsubmit="return confirm('Reject this restaurant request?')">
+                                                        <button type="submit" title="Reject Establishment" class="px-3 py-1.5 rounded-full bg-red-500/20 border border-red-500/40 text-red-400 hover:bg-red-500 hover:text-white font-semibold text-[10px] uppercase tracking-wider transition-all">
+                                                            Reject
+                                                        </button>
+                                                    </form>
+                                                <% } %>
+
+                                                <a href="/restaurants/<%= res._id %>" class="w-7 h-7 rounded-full bg-dark-800 border border-white/10 text-gray-300 hover:border-gold-400 hover:text-gold-400 flex items-center justify-center transition-all" title="View Details">
+                                                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colSpan="6" class="p-12 text-center text-gray-500 font-serif">
+                                        No restaurant records found in the directory.
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: LATEST RESERVATIONS -->
+        <section class="space-y-6 bookings-section-anim">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                    <span class="text-xs uppercase tracking-[0.25em] text-gold-400 font-semibold">Live Feed</span>
+                    <h2 class="font-serif text-2xl text-white mt-1">Latest Reservations</h2>
+                </div>
+                <a href="/admin/bookings" class="text-xs uppercase tracking-widest text-gold-400 hover:underline font-semibold">
+                    View All Bookings <i class="fa-solid fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <% if (latestBookings && latestBookings.length > 0) { %>
+                    <% latestBookings.forEach(booking => { %>
+                        <% 
+                            const bId = booking._id || booking.id || 'N/A';
+                            const isConfirmed = booking.status === 'confirmed' || booking.status === 'Confirmed';
+                            const isCancelled = booking.status === 'cancelled' || booking.status === 'Cancelled';
+                        %>
+                        <div class="glass-panel p-6 rounded-2xl border border-white/10 hover:border-gold-400/40 transition-all space-y-4">
+                            <div class="flex justify-between items-center border-b border-white/10 pb-3">
+                                <span class="font-mono text-[10px] text-gold-400/80">#<%= bId.toString().slice(-6).toUpperCase() %></span>
+                                <% if(isCancelled) { %>
+                                    <span class="px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/40 font-semibold">Cancelled</span>
+                                <% } else { %>
+                                    <span class="px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-semibold">Confirmed</span>
+                                <% } %>
+                            </div>
+
+                            <div class="space-y-1">
+                                <h4 class="font-serif text-lg text-white font-medium"><%= booking.restaurantName || (booking.restaurant ? booking.restaurant.name : 'Exclusive Restaurant') %></h4>
+                                <p class="text-xs text-gray-300 flex items-center"><i class="fa-regular fa-user text-gold-400 mr-2"></i> Patron: <%= booking.userName || (booking.user ? booking.user.name : 'Guest') %></p>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-white/5 text-xs text-gray-400">
+                                <div>
+                                    <span class="text-[9px] uppercase tracking-widest text-gray-500 block">Date & Time</span>
+                                    <span class="text-white font-semibold"><%= booking.bookingDate || booking.date %> • <%= booking.bookingTime || booking.time %></span>
+                                </div>
+                                <div>
+                                    <span class="text-[9px] uppercase tracking-widest text-gray-500 block">Party Size</span>
+                                    <span class="text-gold-400 font-semibold"><%= booking.guests %> Guests</span>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="col-span-full py-12 glass-panel text-center rounded-2xl text-gray-500 font-serif">
+                        No recent reservation activity recorded today.
+                    </div>
+                <% } %>
+            </div>
+        </section>
+
+        <!-- SECTION 4: SYSTEM ANALYTICS DEEP DIVE -->
+        <section class="glass-panel p-8 rounded-3xl border border-gold-400/20 space-y-6 analytics-section-anim">
+            <div class="border-b border-white/10 pb-4">
+                <span class="text-xs uppercase tracking-[0.25em] text-gold-400 font-semibold">System Distribution</span>
+                <h2 class="font-serif text-2xl text-white mt-1">Platform Analytics Summary</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+                <div class="p-6 rounded-2xl bg-dark-900/60 border border-white/5 space-y-2">
+                    <span class="text-xs uppercase tracking-widest text-gray-400">User Growth</span>
+                    <p class="font-serif text-3xl text-white font-bold"><%= totalUsersCount %></p>
+                    <p class="text-[10px] text-emerald-400"><i class="fa-solid fa-arrow-trend-up mr-1"></i> Active Diners</p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-dark-900/60 border border-white/5 space-y-2">
+                    <span class="text-xs uppercase tracking-widest text-gray-400">Owner Partners</span>
+                    <p class="font-serif text-3xl text-gold-400 font-bold"><%= totalOwnersCount %></p>
+                    <p class="text-[10px] text-gray-500">Verified Operators</p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-dark-900/60 border border-white/5 space-y-2">
+                    <span class="text-xs uppercase tracking-widest text-gray-400">Active Listings</span>
+                    <p class="font-serif text-3xl text-white font-bold"><%= approvedRestaurants.length %></p>
+                    <p class="text-[10px] text-gold-400"><%= Math.round((approvedRestaurants.length / (totalRestaurantsCount || 1)) * 100) %>% Approval Rate</p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-dark-900/60 border border-white/5 space-y-2">
+                    <span class="text-xs uppercase tracking-widest text-gray-400">Total Reservations</span>
+                    <p class="font-serif text-3xl text-gold-400 font-bold"><%= totalBookingsCount %></p>
+                    <p class="text-[10px] text-emerald-400"><i class="fa-solid fa-circle-check mr-1"></i> Processed</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark-900 border-t border-white/10 pt-16 pb-12 text-gray-400 w-full">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex flex-col md:flex-row items-center justify-between text-[11px] text-gray-500 border-t border-white/5 pt-8">
+                <a href="/" class="flex items-center space-x-3 mb-4 md:mb-0">
+                    <span class="w-6 h-6 rounded-full border border-gold-400/40 flex items-center justify-center bg-dark-800 text-gold-400 font-serif text-xs font-bold">O</span>
+                    <span class="font-serif text-sm tracking-widest text-white font-semibold uppercase">Open<span class="text-gold-400">Dine</span></span>
+                </a>
+                <p>&copy; 2026 OpenDine Admin Infrastructure. All rights reserved.</p>
+                <p class="mt-2 md:mt-0 uppercase tracking-widest text-[9px]">Confidential Platform Control</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- GSAP & Vanilla JS Logic -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+        // 1. User Menu Dropdown Toggle
+        const userMenuBtn = document.getElementById('user-menu-btn');
+        const userDropdown = document.getElementById('user-dropdown');
+        const dropdownArrow = document.getElementById('dropdown-arrow');
+
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = userDropdown.classList.contains('hidden');
+                if (isHidden) {
+                    userDropdown.classList.remove('hidden');
+                    setTimeout(() => {
+                        userDropdown.classList.remove('opacity-0', 'scale-95');
+                        userDropdown.classList.add('opacity-100', 'scale-100');
+                        if (dropdownArrow) dropdownArrow.classList.add('rotate-180');
+                    }, 10);
+                } else {
+                    closeDropdown();
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!userDropdown.contains(e.target) && !userMenuBtn.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+
+            function closeDropdown() {
+                userDropdown.classList.remove('opacity-100', 'scale-100');
+                userDropdown.classList.add('opacity-0', 'scale-95');
+                if (dropdownArrow) dropdownArrow.classList.remove('rotate-180');
+                setTimeout(() => userDropdown.classList.add('hidden'), 200);
+            }
+        }
+
+        // 2. Client-side Table Filter by Status
+        let currentStatusFilter = 'all';
+
+        function filterByStatus(status) {
+            currentStatusFilter = status;
+
+            // Update Tab UI States
+            document.querySelectorAll('.status-tab-btn').forEach(btn => {
+                if (btn.getAttribute('data-status') === status) {
+                    btn.classList.add('text-gold-400', 'bg-gold-400/10', 'font-semibold');
+                    btn.classList.remove('text-gray-400');
+                } else {
+                    btn.classList.remove('text-gold-400', 'bg-gold-400/10', 'font-semibold');
+                    btn.classList.add('text-gray-400');
+                }
+            });
+
+            applyTableFilters();
+        }
+
+        // 3. Search and Filter Table Master Function
+        const searchInput = document.getElementById('restaurant-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', applyTableFilters);
+        }
+
+        function applyTableFilters() {
+            const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            const rows = document.querySelectorAll('.res-row');
+
+            rows.forEach(row => {
+                const rowStatus = row.getAttribute('data-status');
+                const rowSearchData = row.getAttribute('data-search') || '';
+
+                const matchesStatus = (currentStatusFilter === 'all') || (rowStatus === currentStatusFilter);
+                const matchesSearch = rowSearchData.includes(query);
+
+                if (matchesStatus && matchesSearch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // 4. Sort Table Rows
+        function sortRestaurants() {
+            const sortVal = document.getElementById('restaurant-sort').value;
+            const tbody = document.getElementById('restaurant-table-body');
+            const rows = Array.from(document.querySelectorAll('.res-row'));
+
+            rows.sort((a, b) => {
+                if (sortVal === 'newest') {
+                    return parseInt(b.getAttribute('data-created')) - parseInt(a.getAttribute('data-created'));
+                } else if (sortVal === 'rating') {
+                    return parseFloat(b.getAttribute('data-rating')) - parseFloat(a.getAttribute('data-rating'));
+                }
+                return 0;
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        // 5. GSAP Entrance Animations & Counter Increment Animation
+        document.addEventListener('DOMContentLoaded', () => {
+            // GSAP Stagger Entrance
+            gsap.from('.hero-section-anim', { opacity: 0, y: 30, duration: 0.8, ease: 'power3.out' });
+            gsap.from('.quick-actions-anim', { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out', delay: 0.2 });
+            gsap.from('.approval-section-anim', { opacity: 0, y: 30, duration: 0.8, ease: 'power3.out', delay: 0.3 });
+            gsap.from('.bookings-section-anim', { opacity: 0, y: 30, duration: 0.8, ease: 'power3.out', delay: 0.4 });
+
+            // Animated Metric Counters
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const duration = 1500; // 1.5s
+                const stepTime = 30;
+                const steps = duration / stepTime;
+                const increment = target / steps;
+                let current = 0;
+
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = target.toLocaleString();
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.ceil(current).toLocaleString();
+                    }
+                }, stepTime);
+            });
+        });
+    </script>
+</body>
+</html>

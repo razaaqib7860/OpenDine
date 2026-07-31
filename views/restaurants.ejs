@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Restaurants — OpenDine Luxury Dining</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            100: '#FDF8EC',
+                            300: '#E2C285',
+                            400: '#D4AF37',
+                            500: '#C59B27',
+                            600: '#A37E1C',
+                        },
+                        dark: {
+                            900: '#0B0C0E',
+                            800: '#121418',
+                            700: '#1C1F26',
+                            600: '#2A2E39',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .swiper-slide-active .hero-bg {
+            transform: scale(1.15);
+            transition: transform 10s ease-out;
+        }
+        .hero-bg {
+            transform: scale(1);
+            transition: transform 0.8s ease-in-out;
+        }
+
+        .glass-panel {
+            background: rgba(18, 20, 24, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF0CA 0%, #D4AF37 50%, #996515 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0C0E;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A2E39;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-gray-200 font-sans antialiased overflow-x-hidden selection:bg-gold-400 selection:text-black">
+
+    <!-- NAVBAR (Matches Home Page) -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
+            <div class="flex items-center space-x-12">
+                <a href="/" class="flex items-center space-x-3 group">
+                    <span class="w-10 h-10 rounded-full border border-gold-400/40 flex items-center justify-center bg-dark-800 text-gold-400 text-lg font-serif font-bold group-hover:border-gold-400 transition-colors">
+                        O
+                    </span>
+                    <span class="font-serif text-2xl tracking-widest text-white font-semibold uppercase">
+                        Open<span class="text-gold-400">Dine</span>
+                    </span>
+                </a>
+
+                <nav class="hidden md:flex items-center space-x-8 text-xs font-medium uppercase tracking-widest">
+                    <a href="/discover" class="text-gray-300 hover:text-gold-400 transition-colors duration-300">Discover</a>
+                    <a href="/restaurants" class="text-gold-400 font-semibold transition-colors duration-300">Restaurants</a>
+                    <a href="/bookings/myBookings" class="text-gray-300 hover:text-gold-400 transition-colors duration-300">My Bookings</a>
+                </nav>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <% if(locals.user) { %>
+                    <div class="relative" id="user-menu-container">
+                        <button id="user-menu-btn" class="flex items-center space-x-3 focus:outline-none group p-1.5 rounded-full border border-gold-400/20 hover:border-gold-400 transition-all">
+                            <img src="<%= user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150' %>" 
+                                 alt="<%= user.Name %>" 
+                                 class="w-8 h-8 rounded-full object-cover border border-gold-400/50">
+                            <span class="hidden sm:inline text-xs font-medium uppercase tracking-wider text-gray-200 group-hover:text-gold-400 transition-colors">
+                                <%= user.Name %>
+                            </span>
+                            <i class="fa-solid fa-chevron-down text-xs text-gold-400 px-2 transition-transform duration-300" id="dropdown-arrow"></i>
+                        </button>
+
+                        <div id="user-dropdown" class="hidden absolute right-0 mt-3 w-56 glass-panel rounded-xl shadow-2xl py-2 z-50 transform opacity-0 scale-95 transition-all duration-200">
+                            <div class="px-4 py-3 border-b border-white/10">
+                                <p class="text-xs text-gray-400">Signed in as</p>
+                                <p class="text-sm font-semibold text-white truncate"><%= user.email %></p>
+                            </div>
+
+                            <a href="/profile" class="flex items-center px-4 py-2.5 text-xs text-gray-300 hover:bg-gold-400/10 hover:text-gold-400 transition-colors">
+                                <i class="fa-regular fa-user w-5"></i> Profile
+                            </a>
+                            <a href="/bookings/myBookings" class="flex items-center px-4 py-2.5 text-xs text-gray-300 hover:bg-gold-400/10 hover:text-gold-400 transition-colors">
+                                <i class="fa-regular fa-bookmark w-5"></i> My Bookings
+                            </a>
+
+                            <% if(user.role === 'owner') { %>
+                                <a href="/owner/dashboard" class="flex items-center px-4 py-2.5 text-xs text-gold-400 hover:bg-gold-400/10 transition-colors border-t border-white/5">
+                                    <i class="fa-solid fa-utensils w-5"></i> Owner Dashboard
+                                </a>
+                            <% } %>
+
+                            <% if(user.role === 'admin') { %>
+                                <a href="/admin/dashboard" class="flex items-center px-4 py-2.5 text-xs text-gold-400 hover:bg-gold-400/10 transition-colors border-t border-white/5">
+                                    <i class="fa-solid fa-shield-halved w-5"></i> Admin Dashboard
+                                </a>
+                            <% } %>
+
+                            <div class="border-t border-white/10 mt-1"></div>
+                            <a href="/user/logout" class="flex items-center px-4 py-2.5 text-xs text-red-400 hover:bg-red-500/10 transition-colors">
+                                <i class="fa-solid fa-arrow-right-from-bracket w-5"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <a href="/user/login" class="text-xs font-semibold uppercase tracking-widest text-white hover:text-gold-400 transition-colors">Log In</a>
+                    <a href="/user/signup" class="px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-widest bg-gradient-to-r from-gold-500 to-gold-400 text-black hover:from-gold-400 hover:to-gold-300 transition-all duration-300 shadow-lg shadow-gold-500/20">
+                        Sign Up
+                    </a>
+                <% } %>
+            </div>
+        </div>
+    </header>
+
+    <!-- TOP HERO SECTION WITH SLIDER & SEARCH -->
+    <section class="relative h-[65vh] min-h-[500px] w-full overflow-hidden">
+        <div class="swiper topHeroSwiper h-full w-full">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide overflow-hidden">
+                    <div class="hero-bg h-full w-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=2000');"></div>
+                </div>
+                <div class="swiper-slide overflow-hidden">
+                    <div class="hero-bg h-full w-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&q=80&w=2000');"></div>
+                </div>
+                <div class="swiper-slide overflow-hidden">
+                    <div class="hero-bg h-full w-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=2000');"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute inset-0 z-10 bg-gradient-to-t from-dark-900 via-dark-900/60 to-dark-900/40 pointer-events-none"></div>
+
+        <div class="absolute inset-0 z-20 flex flex-col justify-center items-center text-center px-4 pt-16">
+            <div class="max-w-3xl mx-auto space-y-4 hero-text-anim">
+                <span class="inline-block text-[11px] uppercase tracking-[0.3em] text-gold-400 font-semibold px-4 py-1.5 rounded-full border border-gold-400/30 glass-panel">
+                    Explore Restaurants
+                </span>
+                <h1 class="font-serif text-4xl md:text-6xl font-normal text-white tracking-tight leading-tight">
+                    DISCOVER <span class="italic gold-gradient-text">FINE DINING</span>
+                </h1>
+            </div>
+
+            <!-- Search Form -->
+            <div class="w-full max-w-5xl mt-8 px-4 hero-search-anim">
+                <form action="/restaurants" method="GET" class="glass-panel p-4 md:p-5 rounded-2xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-center justify-between gap-3 border border-gold-400/30">
+                    <!-- Preserve active filter parameters when searching -->
+                    <% if(locals.query?.cuisine) { %><input type="hidden" name="cuisine" value="<%= query.cuisine %>"><% } %>
+                    <% if(locals.query?.priceRange) { %><input type="hidden" name="priceRange" value="<%= query.priceRange %>"><% } %>
+                    <% if(locals.query?.sort) { %><input type="hidden" name="sort" value="<%= query.sort %>"><% } %>
+
+                    <div class="flex items-center w-full md:w-1/4 px-4 py-2 border-b md:border-b-0 md:border-r border-white/10">
+                        <i class="fa-solid fa-magnifying-glass text-gold-400 mr-3"></i>
+                        <input type="text" name="search" value="<%= locals.query?.search || '' %>" placeholder="Search Restaurant..." class="w-full bg-transparent text-sm text-white placeholder-gray-400 focus:outline-none">
+                    </div>
+
+                    <div class="flex items-center w-full md:w-1/4 px-4 py-2 border-b md:border-b-0 md:border-r border-white/10">
+                        <i class="fa-solid fa-location-dot text-gold-400 mr-3"></i>
+                        <input type="text" name="location" value="<%= locals.query?.location || '' %>" placeholder="Location..." class="w-full bg-transparent text-sm text-white placeholder-gray-400 focus:outline-none">
+                    </div>
+
+                    <div class="flex items-center w-full md:w-1/5 px-4 py-2 border-b md:border-b-0 md:border-r border-white/10">
+                        <i class="fa-regular fa-calendar text-gold-400 mr-3"></i>
+                        <input type="date" name="date" value="<%= locals.query?.date || '' %>" class="w-full bg-transparent text-sm text-white focus:outline-none [color-scheme:dark]">
+                    </div>
+
+                    <div class="flex items-center w-full md:w-1/6 px-4 py-2">
+                        <i class="fa-solid fa-user-group text-gold-400 mr-3"></i>
+                        <select name="guests" class="w-full bg-transparent text-sm text-white focus:outline-none cursor-pointer">
+                            <option value="1" <%= locals.query?.guests === '1' ? 'selected' : '' %> class="bg-dark-800">1 Guest</option>
+                            <option value="2" <%= (!locals.query?.guests || locals.query?.guests === '2') ? 'selected' : '' %> class="bg-dark-800">2 Guests</option>
+                            <option value="3" <%= locals.query?.guests === '3' ? 'selected' : '' %> class="bg-dark-800">3 Guests</option>
+                            <option value="4" <%= locals.query?.guests === '4' ? 'selected' : '' %> class="bg-dark-800">4 Guests</option>
+                            <option value="5+" <%= locals.query?.guests === '5+' ? 'selected' : '' %> class="bg-dark-800">5+ Guests</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="w-full md:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-gold-500 to-gold-400 text-black font-semibold text-xs uppercase tracking-widest hover:from-gold-400 hover:to-gold-300 transition-all duration-300 shadow-lg shadow-gold-500/20 whitespace-nowrap">
+                        Find Table
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT AREA: SIDEBAR + RESTAURANTS GRID -->
+    <section class="py-16 px-6 lg:px-12 max-w-7xl mx-auto">
+        <!-- Mobile Filter Toggle Button -->
+        <div class="lg:hidden mb-6">
+            <button id="toggle-filter-btn" class="w-full py-3 px-6 glass-panel rounded-xl text-gold-400 flex items-center justify-between text-xs uppercase tracking-widest font-semibold border border-gold-400/30">
+                <span><i class="fa-solid fa-sliders mr-2"></i> Refine Filters</span>
+                <i class="fa-solid fa-chevron-down" id="filter-chevron"></i>
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
+            
+            <!-- FILTER SIDEBAR -->
+            <aside id="filter-sidebar" class="hidden lg:block lg:col-span-1 space-y-8 glass-panel p-6 rounded-2xl h-fit sticky top-28 border border-white/10">
+                <form action="/restaurants" method="GET" id="filter-form" class="space-y-6">
+                    
+                    <!-- Preserve search inputs if set -->
+                    <% if(locals.query?.search) { %><input type="hidden" name="search" value="<%= query.search %>"><% } %>
+                    <% if(locals.query?.date) { %><input type="hidden" name="date" value="<%= query.date %>"><% } %>
+                    <% if(locals.query?.guests) { %><input type="hidden" name="guests" value="<%= query.guests %>"><% } %>
+
+                    <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                        <h3 class="font-serif text-lg text-white font-semibold">Refine Selection</h3>
+                        <a href="/restaurants" class="text-[10px] uppercase tracking-wider text-gold-400 hover:underline">Reset All</a>
+                    </div>
+
+                    <!-- Sort By -->
+                    <div class="space-y-2">
+                        <label class="text-xs uppercase tracking-widest text-gray-400 font-semibold block">Sort By</label>
+                        <select name="sort" onchange="this.form.submit()" class="w-full bg-dark-900 border border-white/10 text-xs text-white rounded-xl px-4 py-3 focus:outline-none focus:border-gold-400 cursor-pointer">
+                            <option value="newest" <%= locals.query?.sort === 'newest' ? 'selected' : '' %>>Newest Additions</option>
+                            <option value="rating_desc" <%= locals.query?.sort === 'rating_desc' ? 'selected' : '' %>>Highest Rating</option>
+                            <option value="price_asc" <%= locals.query?.sort === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
+                            <option value="price_desc" <%= locals.query?.sort === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
+                        </select>
+                    </div>
+
+                    <!-- Cuisine Filter -->
+                    <div class="space-y-2">
+                        <label class="text-xs uppercase tracking-widest text-gray-400 font-semibold block">Cuisine</label>
+                        <select name="cuisine" onchange="this.form.submit()" class="w-full bg-dark-900 border border-white/10 text-xs text-white rounded-xl px-4 py-3 focus:outline-none focus:border-gold-400 cursor-pointer">
+                            <option value="">All Cuisines</option>
+                            <option value="French" <%= locals.query?.cuisine === 'French' ? 'selected' : '' %>>French Haute Cuisine</option>
+                            <option value="Japanese" <%= locals.query?.cuisine === 'Japanese' ? 'selected' : '' %>>Japanese / Omakase</option>
+                            <option value="Italian" <%= locals.query?.cuisine === 'Italian' ? 'selected' : '' %>>Italian Fine Dining</option>
+                            <option value="Steakhouse" <%= locals.query?.cuisine === 'Steakhouse' ? 'selected' : '' %>>Prime Steakhouse</option>
+                            <option value="Seafood" <%= locals.query?.cuisine === 'Seafood' ? 'selected' : '' %>>Ocean Seafood</option>
+                            <option value="Modern" <%= locals.query?.cuisine === 'Modern' ? 'selected' : '' %>>Modern Experimental</option>
+                        </select>
+                    </div>
+
+                    <!-- Price Range Filter -->
+                    <div class="space-y-2">
+                        <label class="text-xs uppercase tracking-widest text-gray-400 font-semibold block">Price Range</label>
+                        <div class="grid grid-cols-4 gap-2">
+                            <% ['$', '$$', '$$$', '$$$$'].forEach(price => { %>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="priceRange" value="<%= price %>" onchange="this.form.submit()" <%= locals.query?.priceRange === price ? 'checked' : '' %> class="peer hidden">
+                                    <span class="block text-center py-2 text-xs rounded-lg bg-dark-900 border border-white/10 text-gray-400 peer-checked:border-gold-400 peer-checked:bg-gold-400/10 peer-checked:text-gold-400 transition-all font-semibold">
+                                        <%= price %>
+                                    </span>
+                                </label>
+                            <% }); %>
+                        </div>
+                    </div>
+
+                    <!-- Minimum Rating Filter -->
+                    <div class="space-y-2">
+                        <label class="text-xs uppercase tracking-widest text-gray-400 font-semibold block">Minimum Rating</label>
+                        <select name="rating" onchange="this.form.submit()" class="w-full bg-dark-900 border border-white/10 text-xs text-white rounded-xl px-4 py-3 focus:outline-none focus:border-gold-400 cursor-pointer">
+                            <option value="">Any Rating</option>
+                            <option value="4.8" <%= locals.query?.rating === '4.8' ? 'selected' : '' %>>★ 4.8 & Above</option>
+                            <option value="4.5" <%= locals.query?.rating === '4.5' ? 'selected' : '' %>>★ 4.5 & Above</option>
+                            <option value="4.0" <%= locals.query?.rating === '4.0' ? 'selected' : '' %>>★ 4.0 & Above</option>
+                        </select>
+                    </div>
+
+                    <!-- Location Filter -->
+                    <div class="space-y-2">
+                        <label class="text-xs uppercase tracking-widest text-gray-400 font-semibold block">City / Neighborhood</label>
+                        <input type="text" name="location" value="<%= locals.query?.location || '' %>" placeholder="e.g. New York, Paris..." class="w-full bg-dark-900 border border-white/10 text-xs text-white rounded-xl px-4 py-3 focus:outline-none focus:border-gold-400 placeholder-gray-500">
+                    </div>
+
+                    <button type="submit" class="w-full py-3 rounded-xl bg-gold-400 text-black font-semibold text-xs uppercase tracking-widest hover:bg-gold-300 transition-colors">
+                        Apply Filters
+                    </button>
+                </form>
+            </aside>
+
+            <!-- RESTAURANTS GRID & LISTING -->
+            <main class="lg:col-span-3 space-y-8">
+                
+                <!-- Results Header Count -->
+                <div class="flex items-center justify-between border-b border-white/5 pb-4">
+                    <p class="text-xs text-gray-400 uppercase tracking-widest">
+                        Showing <span class="text-gold-400 font-semibold"><%= locals.restaurants ? restaurants.length : 0 %></span> Curated Establishments
+                    </p>
+                </div>
+
+                <% if(locals.restaurants && restaurants.length > 0) { %>
+                    <!-- RESTAURANTS GRID -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <% restaurants.forEach(restaurant => { %>
+                            <div onclick="window.location.href='/restaurants/<%= restaurant.slug %>'" 
+                                 class="group bg-dark-800 rounded-2xl overflow-hidden border border-white/5 hover:border-gold-400/40 transition-all duration-500 cursor-pointer flex flex-col h-full hover:shadow-2xl hover:shadow-gold-500/5">
+                                
+                                <!-- Card Image -->
+                                <div class="relative h-64 overflow-hidden">
+                                    <img src="<%= restaurant.images && restaurant.images.length > 0 ? restaurant.images[0] : 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&q=80&w=800' %>" 
+                                         alt="<%= restaurant.name %>" 
+                                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-dark-800 via-transparent to-transparent"></div>
+                                    
+                                    <div class="absolute top-4 left-4 flex gap-2">
+                                        <span class="bg-dark-900/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] uppercase tracking-wider text-gold-400 font-semibold border border-gold-400/30">
+                                            <%= restaurant.cuisine %>
+                                        </span>
+                                    </div>
+
+                                    <div class="absolute top-4 right-4">
+                                        <span class="bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-xs text-white font-medium">
+                                            <%= restaurant.priceRange || '$$$$' %>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Card Body -->
+                                <div class="p-6 flex flex-col flex-grow justify-between space-y-4">
+                                    <div>
+                                        <h3 class="font-serif text-2xl text-white group-hover:text-gold-400 transition-colors">
+                                            <%= restaurant.name %>
+                                        </h3>
+                                        
+                                        <p class="text-xs text-gray-400 mt-2 flex items-center">
+                                            <i class="fa-solid fa-location-dot text-gold-400 mr-2"></i>
+                                            <%= restaurant.location %>
+                                        </p>
+
+                                        <% if(restaurant.chef) { %>
+                                            <p class="text-xs text-gray-400 mt-1 flex items-center">
+                                                <i class="fa-solid fa-hat-chef text-gold-400 mr-2"></i>
+                                                Chef <%= restaurant.chef %>
+                                            </p>
+                                        <% } %>
+
+                                        <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-gray-400">
+                                            <span><i class="fa-regular fa-clock mr-1 text-gold-400"></i> <%= restaurant.openingTime || '17:00' %> - <%= restaurant.closingTime || '23:00' %></span>
+                                            <span class="text-emerald-400 font-medium">
+                                                <i class="fa-solid fa-circle text-[8px] mr-1"></i> Available Today
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <button class="w-full py-3 rounded-xl border border-gold-400/30 text-gold-400 group-hover:bg-gold-400 group-hover:text-black font-semibold text-xs uppercase tracking-widest transition-all duration-300">
+                                        Reserve Table
+                                    </button>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+
+                    <!-- PAGINATION -->
+                    <% if(locals.pagination && pagination.totalPages > 1) { %>
+                        <div class="pt-12 flex items-center justify-center space-x-3">
+                            <% if(pagination.hasPrev) { %>
+                                <a href="?page=<%= pagination.currentPage - 1 %>" class="w-10 h-10 rounded-full border border-white/10 hover:border-gold-400 flex items-center justify-center text-white hover:text-gold-400 transition-colors">
+                                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                                </a>
+                            <% } %>
+
+                            <% for(let i = 1; i <= pagination.totalPages; i++) { %>
+                                <a href="?page=<%= i %>" class="w-10 h-10 rounded-full border <%= pagination.currentPage === i ? 'bg-gold-400 text-black border-gold-400 font-bold' : 'border-white/10 text-white hover:border-gold-400 hover:text-gold-400' %> flex items-center justify-center text-xs transition-all">
+                                    <%= i %>
+                                </a>
+                            <% } %>
+
+                            <% if(pagination.hasNext) { %>
+                                <a href="?page=<%= pagination.currentPage + 1 %>" class="w-10 h-10 rounded-full border border-white/10 hover:border-gold-400 flex items-center justify-center text-white hover:text-gold-400 transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                </a>
+                            <% } %>
+                        </div>
+                    <% } %>
+
+                <% } else { %>
+                    
+                    <!-- EMPTY STATE -->
+                    <div class="glass-panel rounded-3xl p-16 text-center border border-white/10 my-8 space-y-6">
+                        <div class="w-20 h-20 mx-auto rounded-full bg-gold-400/10 text-gold-400 flex items-center justify-center text-3xl border border-gold-400/30">
+                            <i class="fa-solid fa-utensils"></i>
+                        </div>
+                        <div class="space-y-2">
+                            <h3 class="font-serif text-2xl text-white">No Restaurants Found</h3>
+                            <p class="text-xs text-gray-400 max-w-md mx-auto leading-relaxed">
+                                We couldn't find any dining destinations matching your precise filters or search criteria. Try loosening your filters or search term.
+                            </p>
+                        </div>
+                        <a href="/restaurants" class="inline-block px-8 py-3.5 rounded-full bg-gold-400 text-black font-semibold text-xs uppercase tracking-widest hover:bg-gold-300 transition-colors shadow-lg shadow-gold-500/10">
+                            Clear Filters
+                        </a>
+                    </div>
+
+                <% } %>
+            </main>
+        </div>
+    </section>
+
+    <!-- FOOTER (Matches Home Page) -->
+    <footer class="bg-dark-900 border-t border-white/10 pt-20 pb-12 text-gray-400">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="space-y-4">
+                    <a href="/" class="flex items-center space-x-3">
+                        <span class="w-8 h-8 rounded-full border border-gold-400/40 flex items-center justify-center bg-dark-800 text-gold-400 font-serif font-bold">O</span>
+                        <span class="font-serif text-xl tracking-widest text-white font-semibold uppercase">Open<span class="text-gold-400">Dine</span></span>
+                    </a>
+                    <p class="text-xs text-gray-500 leading-relaxed">
+                        The world’s premier table booking platform for Michelin-starred and luxury culinary establishments.
+                    </p>
+                </div>
+
+                <div>
+                    <h5 class="text-xs font-semibold uppercase tracking-widest text-white mb-4">Platform</h5>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="/discover" class="hover:text-gold-400 transition-colors">Discover</a></li>
+                        <li><a href="/restaurants" class="hover:text-gold-400 transition-colors">Featured Destinations</a></li>
+                        <li><a href="/cuisines" class="hover:text-gold-400 transition-colors">Cuisine Collections</a></li>
+                        <li><a href="/private-dining" class="hover:text-gold-400 transition-colors">Private Events</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="text-xs font-semibold uppercase tracking-widest text-white mb-4">Information</h5>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="/about" class="hover:text-gold-400 transition-colors">About Us</a></li>
+                        <li><a href="/concierge" class="hover:text-gold-400 transition-colors">Concierge Services</a></li>
+                        <li><a href="/terms" class="hover:text-gold-400 transition-colors">Terms of Service</a></li>
+                        <li><a href="/privacy" class="hover:text-gold-400 transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="text-xs font-semibold uppercase tracking-widest text-white mb-4">Connect</h5>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="w-9 h-9 rounded-full bg-dark-800 border border-white/10 flex items-center justify-center text-gray-400 hover:text-gold-400 hover:border-gold-400 transition-all"><i class="fa-brands fa-instagram text-xs"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-dark-800 border border-white/10 flex items-center justify-center text-gray-400 hover:text-gold-400 hover:border-gold-400 transition-all"><i class="fa-brands fa-x-twitter text-xs"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-dark-800 border border-white/10 flex items-center justify-center text-gray-400 hover:text-gold-400 hover:border-gold-400 transition-all"><i class="fa-brands fa-linkedin-in text-xs"></i></a>
+                    </div>
+                    <p class="text-[10px] text-gray-500">Concierge Desk: concierge@opendine.com</p>
+                </div>
+            </div>
+
+            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between text-[11px] text-gray-500">
+                <p>&copy; 2026 OpenDine Inc. All rights reserved.</p>
+                <p class="mt-2 md:mt-0 uppercase tracking-widest text-[9px]">Crafted for Exceptional Taste</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Swiper JS & GSAP -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <script>
+        // 1. Sticky Navbar
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('glass-panel', 'py-4');
+                navbar.classList.remove('py-6');
+            } else {
+                navbar.classList.remove('glass-panel', 'py-4');
+                navbar.classList.add('py-6');
+            }
+        });
+
+        // 2. User Menu Dropdown
+        const userMenuBtn = document.getElementById('user-menu-btn');
+        const userDropdown = document.getElementById('user-dropdown');
+        const dropdownArrow = document.getElementById('dropdown-arrow');
+
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = userDropdown.classList.contains('hidden');
+                if (isHidden) {
+                    userDropdown.classList.remove('hidden');
+                    setTimeout(() => {
+                        userDropdown.classList.remove('opacity-0', 'scale-95');
+                        userDropdown.classList.add('opacity-100', 'scale-100');
+                        if (dropdownArrow) dropdownArrow.classList.add('rotate-180');
+                    }, 10);
+                } else {
+                    closeDropdown();
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!userDropdown.contains(e.target) && !userMenuBtn.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+
+            function closeDropdown() {
+                userDropdown.classList.remove('opacity-100', 'scale-100');
+                userDropdown.classList.add('opacity-0', 'scale-95');
+                if (dropdownArrow) dropdownArrow.classList.remove('rotate-180');
+                setTimeout(() => userDropdown.classList.add('hidden'), 200);
+            }
+        }
+
+        // 3. Mobile Filter Sidebar Toggle
+        const toggleFilterBtn = document.getElementById('toggle-filter-btn');
+        const filterSidebar = document.getElementById('filter-sidebar');
+        const filterChevron = document.getElementById('filter-chevron');
+
+        if (toggleFilterBtn && filterSidebar) {
+            toggleFilterBtn.addEventListener('click', () => {
+                filterSidebar.classList.toggle('hidden');
+                filterChevron.classList.toggle('rotate-180');
+            });
+        }
+
+        // 4. Hero Swiper
+        const topHeroSwiper = new Swiper('.topHeroSwiper', {
+            effect: 'fade',
+            fadeEffect: { crossFade: true },
+            loop: true,
+            autoplay: { delay: 5000, disableOnInteraction: false },
+            speed: 1500,
+        });
+
+        // 5. GSAP Entrance Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.from('.hero-text-anim', { opacity: 0, y: 30, duration: 1, ease: 'power3.out' });
+            gsap.from('.hero-search-anim', { opacity: 0, y: 30, duration: 1, ease: 'power3.out', delay: 0.3 });
+        });
+    </script>
+</body>
+</html>

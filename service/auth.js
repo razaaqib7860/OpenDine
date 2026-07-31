@@ -16,8 +16,20 @@ function getUser(token){
     return jwt.verify(token,secret); //it return true/false
 }
 
+function requireLogin(req, res, next) {
+
+    if (!req.user) {
+
+        req.session.returnTo = req.originalUrl;
+
+        return res.redirect("/user/login");
+    }
+
+    next();
+}
 
 module.exports={
     setUser,
     getUser,
+    requireLogin,
 }

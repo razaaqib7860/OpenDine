@@ -1,8 +1,11 @@
-const cors = require("cors");
+
 
 app.use(
   cors({
-    origin: "https://upgraded-guide-r4qvwxr59jprcxr97-8080.app.github.dev/", //frontend URL
+    origin: [
+      "http://localhost:8080",
+      "https://fictional-cod-v697w5gjx6jqfxx69-8080.app.github.dev"
+    ],
     credentials: true,
   })
 );

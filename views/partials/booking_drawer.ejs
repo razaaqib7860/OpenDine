@@ -1,0 +1,254 @@
+<!-- LUXURY BOOKING SIDE DRAWER OVERLAY -->
+<div id="booking-drawer-overlay" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300 flex justify-end">
+    
+    <!-- SIDE DRAWER CONTAINER -->
+    <div id="booking-drawer" class="w-full max-w-lg bg-dark-900/95 h-full border-l border-gold-400/30 p-6 md:p-8 flex flex-col justify-between transform translate-x-full transition-transform duration-500 ease-out shadow-2xl overflow-y-auto">
+        
+        <div class="space-y-6">
+            <!-- Header -->
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                    <span class="text-[10px] uppercase tracking-[0.25em] text-gold-400 font-semibold">Concierge Desk</span>
+                    <h3 class="font-serif text-2xl text-white mt-1">Reservation Summary</h3>
+                </div>
+                <button id="close-drawer-btn" type="button" class="w-9 h-9 rounded-full bg-dark-800 border border-white/10 text-gray-400 hover:text-white hover:border-gold-400/50 flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Restaurant Summary Header Card -->
+            <div class="glass-panel p-4 rounded-2xl border border-white/10 flex items-center space-x-4">
+                <img id="drawer-res-image" 
+                     src="<%= (restaurant.images && restaurant.images.length > 0) ? restaurant.images[0] : 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=300' %>" 
+                     alt="<%= restaurant.name %>" 
+                     class="w-20 h-20 rounded-xl object-cover border border-gold-400/30 flex-shrink-0">
+                <div class="overflow-hidden">
+                    <span class="text-[10px] uppercase tracking-widest text-gold-400 font-semibold">
+                        <%= restaurant.cuisine %> • <%= restaurant.priceRange || '$$$$' %>
+                    </span>
+                    <h4 id="drawer-res-name" class="font-serif text-xl text-white truncate mt-0.5">
+                        <%= restaurant.name %>
+                    </h4>
+                    <p id="drawer-res-location" class="text-xs text-gray-400 truncate mt-1 flex items-center">
+                        <i class="fa-solid fa-location-dot text-gold-400 mr-1.5"></i> <%= restaurant.location %>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Reservation Specifications -->
+            <div class="glass-panel p-5 rounded-2xl border border-white/10 space-y-3.5">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-400 uppercase tracking-wider flex items-center">
+                        <i class="fa-regular fa-calendar text-gold-400 w-5"></i> Date
+                    </span>
+                    <span id="drawer-summary-date" class="text-white font-semibold">—</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-400 uppercase tracking-wider flex items-center">
+                        <i class="fa-regular fa-clock text-gold-400 w-5"></i> Time
+                    </span>
+                    <span id="drawer-summary-time" class="text-gold-400 font-semibold">—</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-400 uppercase tracking-wider flex items-center">
+                        <i class="fa-solid fa-user-group text-gold-400 w-5"></i> Party Size
+                    </span>
+                    <span id="drawer-summary-guests" class="text-white font-semibold">—</span>
+                </div>
+            </div>
+
+            <!-- Custom Preferences (Occasion & Requests) -->
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs uppercase tracking-widest text-gray-400 font-semibold block mb-2">Dining Occasion</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-champagne-glasses absolute left-4 top-1/2 -translate-y-1/2 text-gold-400"></i>
+                        <select id="drawer-occasion" name="occasion" class="w-full bg-dark-800 border border-white/10 text-xs text-white rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:border-gold-400 cursor-pointer">
+                            <option value="Casual Dining" selected>Casual Dining</option>
+                            <option value="Birthday">Birthday Celebration</option>
+                            <option value="Anniversary">Anniversary</option>
+                            <option value="Business Meal">Business Dinner</option>
+                            <option value="Romantic Date">Romantic Date</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs uppercase tracking-widest text-gray-400 font-semibold block mb-2">Special Requests (Optional)</label>
+                    <textarea id="drawer-special-requests" rows="2" placeholder="Dietary preferences, quiet table, seating request..." class="w-full bg-dark-800 border border-white/10 text-xs text-white rounded-xl p-3.5 focus:outline-none focus:border-gold-400 placeholder-gray-600 resize-none"></textarea>
+                </div>
+            </div>
+
+            <!-- Price Breakdown Calculation -->
+            <div class="glass-panel p-5 rounded-2xl border border-white/10 space-y-2.5">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-400">Concierge Booking Fee</span>
+                    <span id="fee-booking" class="text-gray-200">$10.00</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-400">Table Deposit (Refundable)</span>
+                    <span id="fee-subtotal" class="text-gray-200">$50.00</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-400">Estimated Taxes & Fees</span>
+                    <span id="fee-tax" class="text-gray-200">$6.00</span>
+                </div>
+                <div class="border-t border-white/10 my-2 pt-2 flex justify-between items-center text-sm">
+                    <span class="font-semibold text-white uppercase tracking-wider">Total Due</span>
+                    <span id="fee-total" class="font-serif text-lg font-bold text-gold-400">$66.00</span>
+                </div>
+            </div>
+
+            <!-- Luxury Payment Section Placeholder -->
+            <div class="space-y-2">
+                <label class="text-xs uppercase tracking-widest text-gray-400 font-semibold block">Payment Integration</label>
+                <div class="p-4 rounded-2xl bg-dark-800 border border-gold-400/30 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-full bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 text-sm">
+                            <i class="fa-solid fa-credit-card"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-white">Razorpay Payments</p>
+                            <p class="text-[10px] text-gray-400">Encrypted 256-bit Secure Gateway</p>
+                        </div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider bg-gold-400/20 text-gold-400 border border-gold-400/40 font-bold whitespace-nowrap">
+                        Coming Soon
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirm Form & Action Buttons -->
+        <form action="/bookings/" method="POST" id="drawer-confirm-form" class="space-y-3 pt-6 border-t border-white/10 mt-6">
+            <input type="hidden" name="restaurantId" value="<%= restaurant._id %>">
+            <input type="hidden" id="hidden-date" name="date">
+            <input type="hidden" id="hidden-time" name="time">
+            <input type="hidden" id="hidden-guests" name="guests">
+            <input type="hidden" id="hidden-occasion" name="occasion">
+            <input type="hidden" id="hidden-notes" name="notes">
+
+            <button type="submit" class="w-full py-4 rounded-full bg-gradient-to-r from-gold-500 to-gold-400 text-black font-semibold text-xs uppercase tracking-widest hover:from-gold-400 hover:to-gold-300 transition-all duration-300 shadow-lg shadow-gold-500/20">
+                Confirm Reservation
+            </button>
+            <button type="button" id="cancel-drawer-btn" class="w-full py-3 rounded-full border border-white/10 text-gray-400 font-semibold text-xs uppercase tracking-widest hover:border-red-400/50 hover:text-red-400 transition-all">
+                Cancel
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- CLIENT VANILLA JAVASCRIPT LOGIC -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const bookNowBtn = document.getElementById('book-now-btn');
+        const drawerOverlay = document.getElementById('booking-drawer-overlay');
+        const drawer = document.getElementById('booking-drawer');
+        const closeDrawerBtn = document.getElementById('close-drawer-btn');
+        const cancelDrawerBtn = document.getElementById('cancel-drawer-btn');
+        const isLoggedIn = <%= Boolean(locals.user) %>;
+
+        // Elements to Sync Data From Page
+        const dateInput = document.getElementById('booking-date');
+        const timeInput = document.getElementById('selected-time');
+        const guestsInput = document.getElementById('booking-guests');
+
+        // Drawer Dynamic Target Fields
+        const summaryDate = document.getElementById('drawer-summary-date');
+        const summaryTime = document.getElementById('drawer-summary-time');
+        const summaryGuests = document.getElementById('drawer-summary-guests');
+        const occasionSelect = document.getElementById('drawer-occasion');
+        const specialRequestsInput = document.getElementById('drawer-special-requests');
+
+        // Form Hidden Inputs
+        const hiddenDate = document.getElementById('hidden-date');
+        const hiddenTime = document.getElementById('hidden-time');
+        const hiddenGuests = document.getElementById('hidden-guests');
+        const hiddenOccasion = document.getElementById('hidden-occasion');
+        const hiddenNotes = document.getElementById('hidden-notes');
+
+        // Open Drawer Logic
+        if (bookNowBtn) {
+            bookNowBtn.addEventListener('click', () => {
+                const dateVal = dateInput ? dateInput.value : '';
+                const timeVal = timeInput ? timeInput.value : '';
+                const guestsVal = guestsInput ? guestsInput.value : '2';
+
+                if (!dateVal) {
+                    alert('Please select a reservation date.');
+                    return;
+                }
+                if (!timeVal) {
+                    alert('Please choose an available time slot.');
+                    return;
+                }
+
+                // Auth Check Redirect
+                if (!isLoggedIn) {
+                    const currentSlug = "<%= restaurant.slug %>";
+                    window.location.href = `/user/login?redirect=/restaurants/${currentSlug}`;
+                    return;
+                }
+
+                // Sync Text Summaries
+                summaryDate.textContent = dateVal;
+                summaryTime.textContent = timeVal;
+                summaryGuests.textContent = `${guestsVal} Guest(s)`;
+
+                // Sync Hidden Inputs
+                hiddenDate.value = dateVal;
+                hiddenTime.value = timeVal;
+                hiddenGuests.value = guestsVal;
+                hiddenOccasion.value = occasionSelect.value;
+                hiddenNotes.value = specialRequestsInput.value;
+
+                // Dynamically Calculate Prices
+                const guestCount = parseInt(guestsVal) || 2;
+                const deposit = guestCount * 25;
+                const bookingFee = 10;
+                const tax = parseFloat(((deposit + bookingFee) * 0.1).toFixed(2));
+                const total = deposit + bookingFee + tax;
+
+                document.getElementById('fee-subtotal').textContent = `$${deposit.toFixed(2)}`;
+                document.getElementById('fee-tax').textContent = `$${tax.toFixed(2)}`;
+                document.getElementById('fee-total').textContent = `$${total.toFixed(2)}`;
+
+                // Show Drawer Animation
+                drawerOverlay.classList.remove('hidden');
+                setTimeout(() => {
+                    drawerOverlay.classList.remove('opacity-0');
+                    drawer.classList.remove('translate-x-full');
+                }, 10);
+            });
+        }
+
+        // Live Input Synchronization
+        if (occasionSelect) {
+            occasionSelect.addEventListener('change', (e) => {
+                hiddenOccasion.value = e.target.value;
+            });
+        }
+        if (specialRequestsInput) {
+            specialRequestsInput.addEventListener('input', (e) => {
+                hiddenNotes.value = e.target.value;
+            });
+        }
+
+        // Close Drawer Logic
+        function closeDrawer() {
+            drawer.classList.add('translate-x-full');
+            drawerOverlay.classList.add('opacity-0');
+            setTimeout(() => {
+                drawerOverlay.classList.add('hidden');
+            }, 500);
+        }
+
+        if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);
+        if (cancelDrawerBtn) cancelDrawerBtn.addEventListener('click', closeDrawer);
+        if (drawerOverlay) {
+            drawerOverlay.addEventListener('click', (e) => {
+                if (e.target === drawerOverlay) closeDrawer();
+            });
+        }
+    });
+</script>

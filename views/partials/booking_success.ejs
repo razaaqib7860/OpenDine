@@ -1,0 +1,114 @@
+<!-- BOOKING SUCCESS MODAL -->
+<div id="booking-success-modal-overlay" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+    <div id="booking-success-modal-card" class="w-full max-w-lg bg-dark-900/95 border border-gold-400/30 rounded-3xl p-6 sm:p-8 flex flex-col justify-between transform scale-90 transition-all duration-300 ease-out shadow-2xl space-y-6 relative overflow-hidden">
+        
+        <!-- Ambient Gold Glow -->
+        <div class="absolute -top-20 -right-20 w-40 h-40 bg-gold-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Header Icon & Title -->
+        <div class="text-center space-y-3">
+            <div class="w-16 h-16 mx-auto rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-3xl shadow-lg shadow-emerald-500/10">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <span class="inline-block text-[10px] uppercase tracking-[0.25em] text-gold-400 font-semibold px-3 py-1 rounded-full border border-gold-400/30 bg-gold-400/10">
+                Reservation Confirmed
+            </span>
+            <h3 class="font-serif text-2xl text-white">Table Reserved</h3>
+            <p class="text-xs text-gray-400">Your table has been successfully reserved.</p>
+        </div>
+
+        <!-- Dynamic Details Grid -->
+        <div class="glass-panel p-5 rounded-2xl border border-white/10 space-y-3">
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider">Booking ID</span>
+                <span id="success-booking-id" class="text-gray-200 font-mono font-semibold">#—</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider">Restaurant</span>
+                <span id="success-restaurant-name" class="text-white font-serif font-semibold text-sm truncate max-w-[200px]">—</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider">Date</span>
+                <span id="success-booking-date" class="text-white font-semibold">—</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider">Time Slot</span>
+                <span id="success-booking-time" class="text-gold-400 font-semibold">—</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider">Guests</span>
+                <span id="success-booking-guests" class="text-white font-semibold">—</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider">Status</span>
+                <span id="success-booking-status" class="px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-semibold">Confirmed</span>
+            </div>
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-gray-400 uppercase tracking-wider">Booking Fee Paid</span>
+                <span id="success-booking-fee" class="text-gray-200 font-semibold">$10.00</span>
+            </div>
+            <div class="flex justify-between items-center text-xs pt-2 border-t border-white/10">
+                <span class="text-gray-400 uppercase tracking-wider">Reserved On</span>
+                <span id="success-booking-created" class="text-gray-400">—</span>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <a href="/bookings/myBookings" class="w-full py-3.5 rounded-full bg-gradient-to-r from-gold-500 to-gold-400 text-black font-semibold text-xs uppercase tracking-widest hover:from-gold-400 hover:to-gold-300 transition-all duration-300 shadow-lg shadow-gold-500/10 text-center">
+                View My Bookings
+            </a>
+            <button type="button" id="close-success-modal-btn" class="w-full py-3.5 rounded-full border border-white/10 text-gray-300 hover:border-gold-400 hover:text-gold-400 font-semibold text-xs uppercase tracking-widest transition-all">
+                Continue Exploring
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const overlay = document.getElementById('booking-success-modal-overlay');
+        const card = document.getElementById('booking-success-modal-card');
+        const closeBtn = document.getElementById('close-success-modal-btn');
+
+        window.openBookingSuccessModal = function(booking) {
+            if (!booking) return;
+
+            document.getElementById('success-booking-id').textContent = '#' + (booking._id ? booking._id.toString().toUpperCase() : 'N/A');
+            document.getElementById('success-restaurant-name').textContent = (booking.restaurant && booking.restaurant.name) ? booking.restaurant.name : "<%= restaurant.name %>";
+            document.getElementById('success-booking-date').textContent = booking.date || '—';
+            document.getElementById('success-booking-time').textContent = booking.time || '—';
+            document.getElementById('success-booking-guests').textContent = `${booking.guests || 1} Guest(s)`;
+            
+            if(booking.status) {
+                document.getElementById('success-booking-status').textContent = booking.status;
+            }
+
+            const creationDate = booking.createdAt ? new Date(booking.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            document.getElementById('success-booking-created').textContent = creationDate;
+
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                card.classList.remove('scale-90');
+                card.classList.add('scale-100');
+            }, 10);
+        };
+
+        function closeSuccessModal() {
+            card.classList.remove('scale-100');
+            card.classList.add('scale-90');
+            overlay.classList.add('opacity-0');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300);
+        }
+
+        if (closeBtn) closeBtn.addEventListener('click', closeSuccessModal);
+        if (overlay) {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeSuccessModal();
+            });
+        }
+    });
+</script>

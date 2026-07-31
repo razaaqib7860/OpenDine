@@ -1,47 +1,22 @@
 const User=require("../models/user");
-const {setUser}=require("../service/auth");
+const {setUser,requireLogin}=require("../service/auth");
 const jwt=require("jsonwebtoken")
 
-//signup
-//POST /user/signup
-// async function signup(req,res){
-// const {Name,email,password,phone} = req.body;
-// if(!Name||!email||!password||!phone){
-//     return res.redirect("/user/signup",
-//         {error:"All feild are required!"})
-// }
-// const existUser=await User.findOne({email});
-// if(existUser){
-//     return res.redirect("/user/login",
-//         {error:"User already exist",message:"please login"});
-// }
-// const user= await User.create({
-//     Name,
-//     phone,
-//     email,
-//     password,
-// });
-// const token = setUser(user);
-// res.cookie("uid", token);
-// return res.redirect("/");
-// }
 async function signup(req, res) {
   try {
     const { Name, email, password, phone } = req.body;
 
     if (!Name || !email || !password || !phone) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required",
+      return res.render("signup", {
+        error: "All fields are required",
       });
     }
 
     const existUser = await User.findOne({ email });
 
     if (existUser) {
-      return res.status(409).json({
-        success: false,
-        message: "User already exists",
+      return res.render("signup", {
+        error: "User already exists",
       });
     }
 
@@ -59,51 +34,25 @@ async function signup(req, res) {
       secure: false,
     });
 
-    return res.status(201).json({
-      success: true,
-      message: "Account created successfully",
-      user,
-    });
+     if (user.role === "admin") {
+    return res.redirect("/admin/dashboard");
+    }
+
+    if (user.role === "owner") {
+    return res.redirect("/owner/dashboard");
+    }
+
+    const redirectTo = req.body.redirect || "/restaurants";
+    return res.redirect(redirectTo);
 
   } catch (err) {
     console.error(err);
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
+    return res.render("signup", {
+      error: "Internal server error",
     });
   }
 }
 
-
-//login
-//POST /user/login
-// async function login(req,res){
-// try {
-// const {email,password} = req.body;
-// if(!email||!password){
-//     return res.redirect("/user/login",{error:"Email and password are required!"})
-// }
-
-// const existUser=await User.findOne({email,password});
-
-// if(!existUser){
-//     return res.redirect("/user/login",{error:"User not found!"})
-// }
-
-// if(existUser.password!==password){
-//      return res.redirect("/user/login",{error:"Password incorrect!"})
-// }
-
-// const token = setUser(existUser);
-// res.cookie("uid",token,{
-//     httpOnly:true
-// });
-// return res.redirect("/");
-//     } catch (error) {
-//         console.error(error);
-//     }
-// }
 async function login(req, res) {
   try {
     const { email, password } = req.body;
@@ -111,16 +60,14 @@ async function login(req, res) {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
+      return res.render("login", {
+        error: "User not found",
       });
     }
 
     if (user.password !== password) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid password",
+      return res.render("login", {
+        error: "Invalid password",
       });
     }
 
@@ -132,31 +79,31 @@ async function login(req, res) {
       secure: false,
     });
 
-    return res.status(200).json({
-      success: true,
-      message: "Login successful",
-      user,
-    });
-  } catch (err) {
+    if (user.role === "admin") {
+    return res.redirect("/admin/dashboard");
+    }
+
+    if (user.role === "owner") {
+    return res.redirect("/owner/dashboard");
+    }
+
+    const redirectTo = req.body.redirect || "/restaurants";
+    return res.redirect(redirectTo);  
+  } 
+    
+    catch (err) {
     console.error(err);
 
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
+    return res.render("login", {
+      error: "Internal server error",
     });
   }
 }
 
-//update
-//PUT /user/update/:id
-
-
-//logout
 async function logout(req,res){
     res.clearCookie("uid");
     return res.redirect("/");
 }
-
 
 // Get user profile
 // GET /user/profile

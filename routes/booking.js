@@ -5,7 +5,7 @@ const {createBooking,getMyBookings,cancelBooking}=require("../controllers/bookin
 
 router.post("/", createBooking);
 router.get("/myBookings",getMyBookings);
-router.put("/cancel/:id",cancelBooking);
+router.post("/cancel/:id",cancelBooking);
 
 
 module.exports = router;
