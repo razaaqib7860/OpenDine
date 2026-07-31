@@ -26,7 +26,6 @@ const jwt=require("jsonwebtoken")
 // return res.redirect("/");
 // }
 async function signup(req, res) {
-  console.log("BODY:", req.body);
   try {
     const { Name, email, password, phone } = req.body;
 
