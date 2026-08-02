@@ -1,7 +1,7 @@
 const Restaurant = require("../models/restaurant");
 const Booking = require("../models/booking");
 const User = require("../models/user");
-
+const { renderError } = require("./error");
 
 //render dashboard
 //GET //admin/dashboard
@@ -44,10 +44,10 @@ async function renderAdminDashboard(req, res) {
             stats
         });
 
-    } catch (err) {
-        console.log(err);
-        res.status(500).send(err.message);
-    }
+    } catch (error) {
+    console.error(error);
+    renderError(req, res);
+}
 }
 
 //Get all restaurant for admin management
@@ -59,7 +59,7 @@ try {
 
 } catch (error) {
     console.error(error);
-    res.status(400).json({message:error.message});
+    renderError(req, res);
 }
 }  
 
@@ -84,7 +84,7 @@ try {
     res.json(restaurant);
 } catch (error) {
     console.error(error);
-    res.status(400).json({message:error.message});
+    renderError(req, res);
 }
 }
 
@@ -117,7 +117,7 @@ try {
     })
 } catch (error) {
     console.error(error);
-    res.status(400).json({message:error.message});
+    renderError(req, res);
 }
 }
 

@@ -37,10 +37,18 @@ const RestaurantSchema=new mongoose.Schema({
         type:[String],
     },
 
-    priceRange:{
-        type:String,
-        enum:["₹","₹₹","₹₹₹","₹₹₹₹"],
-        required:true
+    priceRange: {
+    type: String,
+    enum: [
+        "250",
+        "500",
+        "1000",
+        "1500",
+        "2000",
+        "3000",
+        "5000"
+    ],
+    required: true
     },
 
     images: {

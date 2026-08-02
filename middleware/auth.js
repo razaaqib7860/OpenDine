@@ -18,6 +18,7 @@ const {getUser} = require("../service/auth");
 //     res.locals.user = user;
 //     next();
 // }
+
 async function checkAuth(req,res,next){
 
     let token = req.cookies.uid;
@@ -27,19 +28,22 @@ async function checkAuth(req,res,next){
         token = req.headers.authorization.split(" ")[1];
     }
 
-    // console.log("TOKEN:", token);
-
     if(!token){
         req.user = null;
         return next();
     }
 
+    // console.log("TOKEN:", token);
+
     const user = getUser(token);
+
+    // console.log("DECODED USER:", user);
 
     // console.log("USER:", user);
 
     if(user){
         req.user = user;
+        res.locals.user = user;
     }
 
     next();

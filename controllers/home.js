@@ -1,4 +1,6 @@
 const Restaurant = require("../models/restaurant");
+const User = require("../models/user");
+const { renderError } = require("./error");
 
 async function renderHome(req, res) {
     try {
@@ -11,6 +13,8 @@ async function renderHome(req, res) {
             status: "approved",
             exclusive: true
         }).limit(8);
+        
+        // console.log(req.user);
 
         res.render("home", {
             user: req.user,
@@ -18,12 +22,36 @@ async function renderHome(req, res) {
             exclusiveRestaurants
         });
 
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Server Error");
+    } catch (error) {
+        console.error(error);
+        renderError(req, res);
+    }
+}
+
+async function profile(req, res) {
+    try {
+        if (!req.user) {
+            return res.redirect("/user/login");
+        }
+
+        const user = await User.findById(req.user._id).select("-password");
+
+        if (!user) {
+            return res.redirect("/user/login");
+        }
+
+        return res.render("profile", {
+            user,
+            title: "My Profile"
+        });
+
+    } catch (error) {
+        console.error(error);
+        renderError(req, res);
     }
 }
 
 module.exports = {
     renderHome,
+    profile,
 }

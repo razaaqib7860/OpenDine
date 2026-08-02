@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= user?.Name || 'Guest User' %> — OpenDine Profile</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            100: '#FDF8EC',
+                            300: '#E2C285',
+                            400: '#D4AF37',
+                            500: '#C59B27',
+                            600: '#A37E1C',
+                        },
+                        dark: {
+                            900: '#0B0C0E',
+                            800: '#121418',
+                            700: '#1C1F26',
+                            600: '#2A2E39',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Backdrop Blur Glassmorphism */
+        .glass-panel {
+            background: rgba(18, 20, 24, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+        }
+
+        /* Gold Gradient Text */
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF0CA 0%, #D4AF37 50%, #996515 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hover Gold Glow */
+        .hover-gold-glow:hover {
+            border-color: rgba(212, 175, 55, 0.6);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.15);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0C0E;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A2E39;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-gray-200 font-sans antialiased overflow-x-hidden selection:bg-gold-400 selection:text-black min-h-screen flex flex-col justify-between">
+
+    <!-- NAVBAR (Matches Platform Theme) -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
+            <div class="flex items-center space-x-12">
+                <a href="/" class="flex items-center space-x-3 group">
+                    <span class="w-10 h-10 rounded-full border border-gold-400/40 flex items-center justify-center bg-dark-800 text-gold-400 text-lg font-serif font-bold group-hover:border-gold-400 transition-colors">
+                        O
+                    </span>
+                    <span class="font-serif text-2xl tracking-widest text-white font-semibold uppercase">
+                        Open<span class="text-gold-400">Dine</span>
+                    </span>
+                </a>
+
+                <nav class="hidden md:flex items-center space-x-8 text-xs font-medium uppercase tracking-widest">
+                    <a href="/discover" class="text-gray-300 hover:text-gold-400 transition-colors duration-300">Discover</a>
+                    <a href="/restaurants" class="text-gray-300 hover:text-gold-400 transition-colors duration-300">Restaurants</a>
+                    <a href="/bookings/myBookings" class="text-gray-300 hover:text-gold-400 transition-colors duration-300">My Bookings</a>
+                </nav>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <% if(locals.user) { %>
+                    <div class="relative" id="user-menu-container">
+                        <button id="user-menu-btn" class="flex items-center space-x-3 focus:outline-none group p-1.5 rounded-full border border-gold-400/20 hover:border-gold-400 transition-all">
+                            <div class="w-8 h-8 rounded-full bg-gold-400/20 border border-gold-400/50 flex items-center justify-center text-gold-400 font-serif font-bold text-sm uppercase">
+                                <%= (user?.Name || user?.email || 'U').charAt(0) %>
+                            </div>
+                            <span class="hidden sm:inline text-xs font-medium uppercase tracking-wider text-gray-200 group-hover:text-gold-400 transition-colors">
+                                <%= user?.Name || 'Account' %>
+                            </span>
+                            <i class="fa-solid fa-chevron-down text-xs text-gold-400 px-2 transition-transform duration-300" id="dropdown-arrow"></i>
+                        </button>
+
+                        <div id="user-dropdown" class="hidden absolute right-0 mt-3 w-56 glass-panel rounded-xl shadow-2xl py-2 z-50 transform opacity-0 scale-95 transition-all duration-200">
+                            <div class="px-4 py-3 border-b border-white/10">
+                                <p class="text-xs text-gray-400">Signed in as</p>
+                                <p class="text-sm font-semibold text-white truncate"><%= user?.email || 'Not Available' %></p>
+                            </div>
+
+                            <a href="/profile" class="flex items-center px-4 py-2.5 text-xs text-gold-400 hover:bg-gold-400/10 transition-colors">
+                                <i class="fa-regular fa-user w-5"></i> Profile
+                            </a>
+                            <a href="/bookings/myBookings" class="flex items-center px-4 py-2.5 text-xs text-gray-300 hover:bg-gold-400/10 hover:text-gold-400 transition-colors">
+                                <i class="fa-regular fa-bookmark w-5"></i> My Bookings
+                            </a>
+
+                            <% if(user?.role === 'owner') { %>
+                                <a href="/owner/dashboard" class="flex items-center px-4 py-2.5 text-xs text-gold-400 hover:bg-gold-400/10 transition-colors border-t border-white/5">
+                                    <i class="fa-solid fa-utensils w-5"></i> Owner Dashboard
+                                </a>
+                            <% } %>
+
+                            <% if(user?.role === 'admin') { %>
+                                <a href="/admin/dashboard" class="flex items-center px-4 py-2.5 text-xs text-gold-400 hover:bg-gold-400/10 transition-colors border-t border-white/5">
+                                    <i class="fa-solid fa-shield-halved w-5"></i> Admin Dashboard
+                                </a>
+                            <% } %>
+
+                            <div class="border-t border-white/10 mt-1"></div>
+                            <a href="/user/logout" class="flex items-center px-4 py-2.5 text-xs text-red-400 hover:bg-red-500/10 transition-colors">
+                                <i class="fa-solid fa-arrow-right-from-bracket w-5"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <a href="/user/login" class="text-xs font-semibold uppercase tracking-widest text-white hover:text-gold-400 transition-colors">Log In</a>
+                    <a href="/user/signup" class="px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-widest bg-gradient-to-r from-gold-500 to-gold-400 text-black hover:from-gold-400 hover:to-gold-300 transition-all duration-300 shadow-lg shadow-gold-500/20">
+                        Sign Up
+                    </a>
+                <% } %>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="pt-28 pb-20 max-w-7xl mx-auto px-6 lg:px-12 w-full flex-grow space-y-12">
+
+        <!-- 1. HERO SECTION -->
+        <section class="relative rounded-3xl overflow-hidden glass-panel border border-gold-400/30 shadow-2xl p-8 sm:p-12 gsap-hero">
+            <!-- Background Ambient Glow & Banner -->
+            <div class="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" style="background-image: url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=2000');"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-dark-900 via-dark-900/90 to-dark-900/60 pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8">
+                <!-- Circular Avatar -->
+                <div class="relative flex-shrink-0">
+                    <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-gradient-to-br from-gold-300 via-gold-400 to-gold-600 p-1 shadow-2xl shadow-gold-500/20 flex items-center justify-center">
+                        <div class="w-full h-full rounded-full bg-dark-900 flex items-center justify-center text-gold-400 font-serif font-bold text-5xl sm:text-6xl uppercase">
+                            <%= (user?.Name || user?.email || 'G').charAt(0) %>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-1 right-1 bg-emerald-500 border-2 border-dark-900 w-5 h-5 rounded-full" title="Active Account"></div>
+                </div>
+
+                <!-- User Information Text -->
+                <div class="text-center md:text-left space-y-3 flex-grow">
+                    <div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                        <span class="inline-block text-[10px] uppercase tracking-[0.25em] text-gold-400 font-semibold px-3 py-1 rounded-full border border-gold-400/40 bg-gold-400/10">
+                            OpenDine Member
+                        </span>
+                        <span class="inline-block text-[10px] uppercase tracking-widest text-gray-300 font-medium px-3 py-1 rounded-full border border-white/10 bg-dark-800">
+                            <%= user?.role ? user.role.toUpperCase() : 'CUSTOMER' %>
+                        </span>
+                    </div>
+
+                    <h1 class="font-serif text-3xl sm:text-5xl font-normal text-white">
+                        <%= user?.Name || 'Guest Patron' %>
+                    </h1>
+
+                    <p class="text-xs sm:text-sm text-gray-400 font-light flex items-center justify-center md:justify-start gap-2">
+                        <i class="fa-regular fa-envelope text-gold-400"></i>
+                        <span><%= user?.email || 'Email Not Available' %></span>
+                    </p>
+
+                    <p class="text-[11px] text-gray-500 uppercase tracking-wider">
+                        Patron Since: <%= user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : '2026' %>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. SIMPLE STATISTICS -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-6 gsap-stats">
+            <div class="glass-panel p-6 rounded-3xl border border-white/10 hover-gold-glow transition-all space-y-2 text-center">
+                <i class="fa-regular fa-bookmark text-gold-400 text-2xl mb-1"></i>
+                <span class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold block">Total Bookings</span>
+                <p class="font-serif text-3xl text-white font-bold counter" data-target="<%= user?.totalBookings || 0 %>">0</p>
+            </div>
+
+            <div class="glass-panel p-6 rounded-3xl border border-white/10 hover-gold-glow transition-all space-y-2 text-center">
+                <i class="fa-solid fa-utensils text-gold-400 text-2xl mb-1"></i>
+                <span class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold block">Restaurants Visited</span>
+                <p class="font-serif text-3xl text-white font-bold counter" data-target="<%= user?.restaurantsVisited || 0 %>">0</p>
+            </div>
+
+            <div class="glass-panel p-6 rounded-3xl border border-white/10 hover-gold-glow transition-all space-y-2 text-center">
+                <i class="fa-solid fa-wine-glass text-gold-400 text-2xl mb-1"></i>
+                <span class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold block">Favourite Cuisine</span>
+                <p class="font-serif text-lg text-gold-400 font-semibold truncate mt-1">
+                    <%= user?.favoriteCuisine || 'French Haute' %>
+                </p>
+            </div>
+
+            <div class="glass-panel p-6 rounded-3xl border border-white/10 hover-gold-glow transition-all space-y-2 text-center">
+                <i class="fa-regular fa-star text-gold-400 text-2xl mb-1"></i>
+                <span class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold block">Reviews Written</span>
+                <p class="font-serif text-3xl text-white font-bold counter" data-target="<%= user?.reviewsWritten || 0 %>">0</p>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- LEFT 2 COLUMNS: ACCOUNT INFO & QUICK ACTIONS -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- 2. ACCOUNT INFORMATION CARD -->
+                <section class="glass-panel p-8 sm:p-10 rounded-3xl border border-gold-400/20 space-y-6 gsap-card">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                        <div>
+                            <span class="text-[10px] uppercase tracking-[0.25em] text-gold-400 font-semibold">Personal Dossier</span>
+                            <h2 class="font-serif text-2xl text-white mt-1">Account Information</h2>
+                        </div>
+                        <button type="button" id="edit-profile-btn" class="px-5 py-2.5 rounded-full border border-gold-400/40 text-gold-400 hover:bg-gold-400 hover:text-black font-semibold text-xs uppercase tracking-widest transition-all">
+                            <i class="fa-solid fa-pen-to-square mr-2"></i> Edit Profile
+                        </button>
+                    </div>
+
+                    <!-- Profile Form -->
+                    <form id="profile-form" action="/profile/update" method="POST" class="space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <!-- Name -->
+                            <div>
+                                <label class="text-xs uppercase tracking-widest text-gray-400 font-semibold block mb-2">Full Name</label>
+                                <input type="text" id="input-name" name="name" value="<%= user?.Name || '' %>" disabled required 
+                                       class="w-full bg-dark-900 border border-white/10 text-xs text-white rounded-2xl p-4 focus:outline-none focus:border-gold-400 disabled:opacity-60 disabled:cursor-not-allowed transition-all">
+                            </div>
+
+                            <!-- Email -->
+                            <div>
+                                <label class="text-xs uppercase tracking-widest text-gray-400 font-semibold block mb-2">Email Address</label>
+                                <input type="email" id="input-email" name="email" value="<%= user?.email || '' %>" disabled required 
+                                       class="w-full bg-dark-900 border border-white/10 text-xs text-white rounded-2xl p-4 focus:outline-none focus:border-gold-400 disabled:opacity-60 disabled:cursor-not-allowed transition-all">
+                            </div>
+
+                            <!-- Phone -->
+                            <div>
+                                <label class="text-xs uppercase tracking-widest text-gray-400 font-semibold block mb-2">Phone Number</label>
+                                <input type="tel" id="input-phone" name="phone" value="<%= user?.phone || '' %>" placeholder="+1 (555) 000-0000" disabled 
+                                       class="w-full bg-dark-900 border border-white/10 text-xs text-white rounded-2xl p-4 focus:outline-none focus:border-gold-400 disabled:opacity-60 disabled:cursor-not-allowed transition-all">
+                            </div>
+
+                            <!-- Role (Read Only) -->
+                            <div>
+                                <label class="text-xs uppercase tracking-widest text-gray-400 font-semibold block mb-2">Account Role</label>
+                                <input type="text" value="<%= user?.role || 'Customer' %>" disabled 
+                                       class="w-full bg-dark-900 border border-white/10 text-xs text-gold-400 font-semibold rounded-2xl p-4 opacity-60 cursor-not-allowed uppercase tracking-wider">
+                            </div>
+                        </div>
+
+                        <!-- Member Since (Read Only) -->
+                        <div>
+                            <label class="text-xs uppercase tracking-widest text-gray-400 font-semibold block mb-2">Registration Date</label>
+                            <input type="text" value="<%= user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : 'August 2026' %>" disabled 
+                                   class="w-full bg-dark-900 border border-white/10 text-xs text-gray-300 rounded-2xl p-4 opacity-60 cursor-not-allowed">
+                        </div>
+
+                        <!-- Action Buttons (Hidden by default) -->
+                        <div id="form-actions" class="hidden flex items-center justify-end space-x-4 pt-4 border-t border-white/10">
+                            <button type="button" id="cancel-edit-btn" class="px-6 py-3 rounded-full border border-white/10 text-gray-400 hover:text-white font-semibold text-xs uppercase tracking-widest transition-all">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-8 py-3 rounded-full bg-gradient-to-r from-gold-500 to-gold-400 text-black font-semibold text-xs uppercase tracking-widest hover:from-gold-400 hover:to-gold-300 transition-all shadow-lg shadow-gold-500/20">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- 3. QUICK ACTIONS -->
+                <section class="space-y-4 gsap-card">
+                    <h3 class="text-xs uppercase tracking-[0.25em] text-gold-400 font-semibold">Shortcuts</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        
+                        <a href="/bookings/myBookings" class="glass-panel p-6 rounded-3xl border border-white/10 hover-gold-glow transition-all duration-300 group block space-y-3">
+                            <div class="w-12 h-12 rounded-2xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 text-lg group-hover:scale-110 transition-transform">
+                                <i class="fa-regular fa-bookmark"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-serif text-lg text-white group-hover:text-gold-400 transition-colors">My Bookings</h4>
+                                <p class="text-xs text-gray-400 mt-1">Review active table holds and dining history.</p>
+                            </div>
+                        </a>
+
+                        <a href="/restaurants" class="glass-panel p-6 rounded-3xl border border-white/10 hover-gold-glow transition-all duration-300 group block space-y-3">
+                            <div class="w-12 h-12 rounded-2xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 text-lg group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-compass"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-serif text-lg text-white group-hover:text-gold-400 transition-colors">Discover Restaurants</h4>
+                                <p class="text-xs text-gray-400 mt-1">Explore handpicked Michelin-grade destinations.</p>
+                            </div>
+                        </a>
+
+                        <a href="/wishlist" class="glass-panel p-6 rounded-3xl border border-white/10 hover-gold-glow transition-all duration-300 group block space-y-3">
+                            <div class="w-12 h-12 rounded-2xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 text-lg group-hover:scale-110 transition-transform">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-serif text-lg text-white group-hover:text-gold-400 transition-colors">Wishlist</h4>
+                                <p class="text-xs text-gray-400 mt-1">Saved tables and chef counter experiences.</p>
+                            </div>
+                        </a>
+
+                        <a href="/user/logout" class="glass-panel p-6 rounded-3xl border border-white/10 hover:border-red-500/40 hover:bg-red-500/5 transition-all duration-300 group block space-y-3">
+                            <div class="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 text-lg group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-serif text-lg text-white group-hover:text-red-400 transition-colors">Logout</h4>
+                                <p class="text-xs text-gray-400 mt-1">End your current concierge portal session.</p>
+                            </div>
+                        </a>
+
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- RIGHT 1 COLUMN: ACCOUNT STATUS & DANGER ZONE -->
+            <div class="lg:col-span-1 space-y-8">
+                
+                <!-- 4. ACCOUNT STATUS -->
+                <section class="glass-panel p-8 rounded-3xl border border-gold-400/20 space-y-6 gsap-card">
+                    <div class="border-b border-white/10 pb-4">
+                        <span class="text-[10px] uppercase tracking-[0.25em] text-gold-400 font-semibold">Verification</span>
+                        <h3 class="font-serif text-xl text-white mt-1">Account Status</h3>
+                    </div>
+
+                    <div class="space-y-4 text-xs">
+                        <div class="flex items-center justify-between p-3.5 rounded-2xl bg-dark-900/80 border border-white/5">
+                            <span class="text-gray-300 flex items-center gap-2">
+                                <i class="fa-solid fa-envelope text-gold-400"></i> Email Verification
+                            </span>
+                            <span class="text-emerald-400 font-semibold flex items-center gap-1">
+                                <i class="fa-solid fa-circle-check text-[10px]"></i> Verified
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3.5 rounded-2xl bg-dark-900/80 border border-white/5">
+                            <span class="text-gray-300 flex items-center gap-2">
+                                <i class="fa-solid fa-phone text-gold-400"></i> Phone Contact
+                            </span>
+                            <% if(user?.phone) { %>
+                                <span class="text-emerald-400 font-semibold flex items-center gap-1">
+                                    <i class="fa-solid fa-circle-check text-[10px]"></i> Added
+                                </span>
+                            <% } else { %>
+                                <span class="text-amber-400 font-semibold flex items-center gap-1">
+                                    <i class="fa-solid fa-circle-exclamation text-[10px]"></i> Pending
+                                </span>
+                            <% } %>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3.5 rounded-2xl bg-dark-900/80 border border-white/5">
+                            <span class="text-gray-300 flex items-center gap-2">
+                                <i class="fa-solid fa-shield-halved text-gold-400"></i> Platform Standing
+                            </span>
+                            <span class="text-emerald-400 font-semibold flex items-center gap-1">
+                                <i class="fa-solid fa-circle-check text-[10px]"></i> Active
+                            </span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. DANGER ZONE -->
+                <section class="p-8 rounded-3xl bg-red-500/5 border border-red-500/20 space-y-4 gsap-card">
+                    <div class="flex items-center space-x-3 text-red-400">
+                        <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                        <h4 class="font-serif text-lg font-semibold text-white">Danger Zone</h4>
+                    </div>
+
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Permanently close your OpenDine account and release all concierge table holds. <strong class="text-red-300">This action cannot be undone.</strong>
+                    </p>
+
+                    <form action="/profile/delete?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you wish to permanently delete your OpenDine account? This cannot be undone.');">
+                        <button type="submit" class="w-full py-3.5 rounded-full border border-red-500/40 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white font-semibold text-xs uppercase tracking-widest transition-all">
+                            Delete Account
+                        </button>
+                    </form>
+                </section>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER (Matches Platform Theme) -->
+    <footer class="bg-dark-900 border-t border-white/10 pt-20 pb-12 text-gray-400 w-full">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <!-- Brand Info -->
+                <div class="space-y-4">
+                    <a href="/" class="flex items-center space-x-3">
+                        <span class="w-8 h-8 rounded-full border border-gold-400/40 flex items-center justify-center bg-dark-800 text-gold-400 font-serif font-bold">O</span>
+                        <span class="font-serif text-xl tracking-widest text-white font-semibold uppercase">Open<span class="text-gold-400">Dine</span></span>
+                    </a>
+                    <p class="text-xs text-gray-500 leading-relaxed">
+                        The world’s premier table booking platform for Michelin-starred and luxury culinary establishments.
+                    </p>
+                </div>
+
+                <!-- Navigation Links -->
+                <div>
+                    <h5 class="text-xs font-semibold uppercase tracking-widest text-white mb-4">Platform</h5>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="/discover" class="hover:text-gold-400 transition-colors">Discover</a></li>
+                        <li><a href="/restaurants" class="hover:text-gold-400 transition-colors">Featured Destinations</a></li>
+                        <li><a href="/cuisines" class="hover:text-gold-400 transition-colors">Cuisine Collections</a></li>
+                        <li><a href="/private-dining" class="hover:text-gold-400 transition-colors">Private Events</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal Links -->
+                <div>
+                    <h5 class="text-xs font-semibold uppercase tracking-widest text-white mb-4">Information</h5>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="/about" class="hover:text-gold-400 transition-colors">About Us</a></li>
+                        <li><a href="/concierge" class="hover:text-gold-400 transition-colors">Concierge Services</a></li>
+                        <li><a href="/terms" class="hover:text-gold-400 transition-colors">Terms of Service</a></li>
+                        <li><a href="/privacy" class="hover:text-gold-400 transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <!-- Social & Contact -->
+                <div>
+                    <h5 class="text-xs font-semibold uppercase tracking-widest text-white mb-4">Connect</h5>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="w-9 h-9 rounded-full bg-dark-800 border border-white/10 flex items-center justify-center text-gray-400 hover:text-gold-400 hover:border-gold-400 transition-all"><i class="fa-brands fa-instagram text-xs"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-dark-800 border border-white/10 flex items-center justify-center text-gray-400 hover:text-gold-400 hover:border-gold-400 transition-all"><i class="fa-brands fa-x-twitter text-xs"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-dark-800 border border-white/10 flex items-center justify-center text-gray-400 hover:text-gold-400 hover:border-gold-400 transition-all"><i class="fa-brands fa-linkedin-in text-xs"></i></a>
+                    </div>
+                    <p class="text-[10px] text-gray-500">Concierge Desk: concierge@opendine.com</p>
+                </div>
+            </div>
+
+            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between text-[11px] text-gray-500">
+                <p>&copy; 2026 OpenDine Inc. All rights reserved.</p>
+                <p class="mt-2 md:mt-0 uppercase tracking-widest text-[9px]">Crafted for Exceptional Taste</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- GSAP Animations & Vanilla JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+        // 1. Sticky Navbar
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('glass-panel', 'py-4');
+                navbar.classList.remove('py-6');
+            } else {
+                navbar.classList.remove('glass-panel', 'py-4');
+                navbar.classList.add('py-6');
+            }
+        });
+
+        // 2. User Dropdown Menu Toggle
+        const userMenuBtn = document.getElementById('user-menu-btn');
+        const userDropdown = document.getElementById('user-dropdown');
+        const dropdownArrow = document.getElementById('dropdown-arrow');
+
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = userDropdown.classList.contains('hidden');
+                if (isHidden) {
+                    userDropdown.classList.remove('hidden');
+                    setTimeout(() => {
+                        userDropdown.classList.remove('opacity-0', 'scale-95');
+                        userDropdown.classList.add('opacity-100', 'scale-100');
+                        if (dropdownArrow) dropdownArrow.classList.add('rotate-180');
+                    }, 10);
+                } else {
+                    closeDropdown();
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!userDropdown.contains(e.target) && !userMenuBtn.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+
+            function closeDropdown() {
+                userDropdown.classList.remove('opacity-100', 'scale-100');
+                userDropdown.classList.add('opacity-0', 'scale-95');
+                if (dropdownArrow) dropdownArrow.classList.remove('rotate-180');
+                setTimeout(() => userDropdown.classList.add('hidden'), 200);
+            }
+        }
+
+        // 3. Edit Profile Toggle Logic
+        const editProfileBtn = document.getElementById('edit-profile-btn');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const formActions = document.getElementById('form-actions');
+
+        const inputName = document.getElementById('input-name');
+        const inputEmail = document.getElementById('input-email');
+        const inputPhone = document.getElementById('input-phone');
+
+        let initialValues = {
+            name: inputName ? inputName.value : '',
+            email: inputEmail ? inputEmail.value : '',
+            phone: inputPhone ? inputPhone.value : ''
+        };
+
+        if (editProfileBtn && formActions) {
+            editProfileBtn.addEventListener('click', () => {
+                inputName.disabled = false;
+                inputEmail.disabled = false;
+                inputPhone.disabled = false;
+
+                inputName.focus();
+                formActions.classList.remove('hidden');
+                editProfileBtn.classList.add('hidden');
+            });
+        }
+
+        if (cancelEditBtn) {
+            cancelEditBtn.addEventListener('click', () => {
+                inputName.value = initialValues.name;
+                inputEmail.value = initialValues.email;
+                inputPhone.value = initialValues.phone;
+
+                inputName.disabled = true;
+                inputEmail.disabled = true;
+                inputPhone.disabled = true;
+
+                formActions.classList.add('hidden');
+                editProfileBtn.classList.remove('hidden');
+            });
+        }
+
+        // 4. Animated Statistics Counters
+        const counters = document.querySelectorAll('.counter');
+        counters.forEach(counter => {
+            const target = +counter.getAttribute('data-target');
+            const duration = 1200; // 1.2s
+            const stepTime = 30;
+            const steps = duration / stepTime;
+            const increment = target / steps;
+            let current = 0;
+
+            if (target === 0) {
+                counter.textContent = "0";
+                return;
+            }
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    counter.textContent = target.toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    counter.textContent = Math.ceil(current).toLocaleString();
+                }
+            }, stepTime);
+        });
+
+        // 5. GSAP Entrance Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.from('.gsap-hero', { opacity: 0, y: 30, duration: 1, ease: 'power3.out' });
+            gsap.from('.gsap-stats', { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out', delay: 0.2 });
+            gsap.from('.gsap-card', { opacity: 0, y: 20, duration: 0.8, stagger: 0.15, ease: 'power3.out', delay: 0.3 });
+        });
+    </script>
+</body>
+</html>

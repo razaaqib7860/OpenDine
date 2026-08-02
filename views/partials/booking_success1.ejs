@@ -203,7 +203,7 @@
             </span>
 
             <h1 class="font-serif text-4xl sm:text-5xl font-normal text-white">
-                RESERVATION <span class="italic gold-gradient-text">CONFIRMED</span>
+                RESERVATION <span class="italic font-light text-[#C8A04A]">CONFIRMED</span>
             </h1>
 
             <p class="text-xs sm:text-sm text-gray-400 max-w-md mx-auto leading-relaxed">
@@ -239,7 +239,7 @@
                     
                     <div class="text-center sm:text-left space-y-2 flex-grow">
                         <span class="text-[10px] uppercase tracking-widest text-gold-400 font-semibold">
-                            <%= booking.restaurant ? (booking.restaurant.cuisine || 'Fine Dining') : 'Fine Dining' %> • <%= booking.restaurant ? (booking.restaurant.priceRange || '$$$$') : '$$$$' %>
+                            <%= booking.restaurant ? (booking.restaurant.cuisine || 'Fine Dining') : 'Fine Dining' %> • Avg ₹<%= booking.restaurant ? (booking.restaurant.priceRange || '1000') : '1000' %> • 2 Guests
                         </span>
                         <h2 class="font-serif text-3xl text-white">
                             <%= booking.restaurant ? booking.restaurant.name : 'Exclusive Establishment' %>

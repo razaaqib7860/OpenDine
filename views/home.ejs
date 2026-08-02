@@ -31,64 +31,83 @@
                             600: '#A37E1C',
                         },
                         dark: {
-                            900: '#0B0C0E',
-                            800: '#121418',
-                            700: '#1C1F26',
-                            600: '#2A2E39',
+                            900: '#0F1015',
+                            800: '#161922',
+                            700: '#202430',
+                            600: '#2C3242',
                         }
                     },
                     fontFamily: {
                         serif: ['Playfair Display', 'serif'],
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'gold-glow': '0 0 30px -5px rgba(212, 175, 55, 0.25)',
+                        'gold-glow-lg': '0 0 50px -5px rgba(212, 175, 55, 0.4)',
+                        'glass': '0 12px 40px 0 rgba(0, 0, 0, 0.45)'
                     }
                 }
             }
         }
     </script>
 
-    <style>
-        /* Custom Swiper Cinematic Zoom Effect */
-        .swiper-slide-active .hero-bg {
-            transform: scale(1.15);
-            transition: transform 10s ease-out;
-        }
-        .hero-bg {
-            transform: scale(1);
-            transition: transform 0.8s ease-in-out;
-        }
+   <style>
+    /* Full Natural Ambient Light for Architecture */
+    .hero-bg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        animation: heroZoom 25s ease-in-out infinite alternate;
+        filter: brightness(1.25) contrast(1.02); /* Bright, warm ambient lighting */
+    }
 
-        /* Backdrop Blur Glassmorphism */
-        .glass-panel {
-            background: rgba(18, 20, 24, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-        }
+    @keyframes heroZoom {
+        from { transform: scale(1); }
+        to { transform: scale(1.08); }
+    }
 
-        /* Gold Gradient Text */
-        .gold-gradient-text {
-            background: linear-[#B8860B] linear-gradient(135deg, #FFF0CA 0%, #D4AF37 50%, #996515 100%);
-            -webkit-background-clip:text;
-            -webkit-text-fill-color:transparent;
-        }
+    /* Soft Subtraction Gradient Overlay */
+    .hero-overlay {
+        background: radial-gradient(circle at center, rgba(15, 16, 21, 0.2) 0%, rgba(15, 16, 21, 0.75) 100%);
+    }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0B0C0E;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2A2E39;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #D4AF37;
-        }
-    </style>
+    /* Minimalist Glassmorphism Widget */
+    .glass-panel-subtle {
+        background: rgba(22, 25, 34, 0.75);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .glass-panel {
+        background: rgba(22, 25, 34, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(212, 175, 55, 0.25);
+    }
+
+    .glass-card-featured {
+        background: linear-gradient(145deg, rgba(26, 30, 41, 0.9) 0%, rgba(18, 20, 28, 0.95) 100%);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    /* Elegant Soft Gold Text */
+    .gold-text-subtle {
+        color: #D4AF37;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0F1015; }
+    ::-webkit-scrollbar-thumb { background: #2C3242; border-radius: 4px; border: 1px solid rgba(212, 175, 55, 0.2); }
+    ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+</style>
+
 </head>
-<body class="bg-dark-900 text-gray-200 font-sans antialiased overflow-x-hidden selection:bg-gold-400 selection:text-black">
+<body class="bg-gradient-to-b from-[#0F1015] via-[#141720] to-[#0D0E12] text-gray-200 font-sans antialiased overflow-x-hidden selection:bg-gold-400 selection:text-black min-h-screen">
 
     <!-- NAVBAR -->
     <header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6 border-b border-white/5">
@@ -115,39 +134,37 @@
             <!-- Right Side: User Menu / Auth -->
             <div class="flex items-center space-x-6">
                 <% if(locals.user) { %>
-                    <!-- Logged In Dropdown -->
                     <div class="relative" id="user-menu-container">
                         <button id="user-menu-btn" class="flex items-center space-x-3 focus:outline-none group p-1.5 rounded-full border border-gold-400/20 hover:border-gold-400 transition-all">
-                            <img src="<%= user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150' %>" 
-                                 alt="<%= user.Name %>" 
-                                 class="w-8 h-8 rounded-full object-cover border border-gold-400/50">
+                            <div class="w-8 h-8 rounded-full bg-gold-400/20 border border-gold-400/50 flex items-center justify-center text-gold-400 font-serif font-bold text-sm uppercase">
+                                <%= (user?.Name || user?.email || 'U').charAt(0) %>
+                            </div>
                             <span class="hidden sm:inline text-xs font-medium uppercase tracking-wider text-gray-200 group-hover:text-gold-400 transition-colors">
-                                <%= user.Name %>
+                                <%= user?.Name || 'Account' %>
                             </span>
                             <i class="fa-solid fa-chevron-down text-xs text-gold-400 px-2 transition-transform duration-300" id="dropdown-arrow"></i>
                         </button>
 
-                        <!-- Menu Dropdown -->
                         <div id="user-dropdown" class="hidden absolute right-0 mt-3 w-56 glass-panel rounded-xl shadow-2xl py-2 z-50 transform opacity-0 scale-95 transition-all duration-200">
                             <div class="px-4 py-3 border-b border-white/10">
                                 <p class="text-xs text-gray-400">Signed in as</p>
-                                <p class="text-sm font-semibold text-white truncate"><%= user.email %></p>
+                                <p class="text-sm font-semibold text-white truncate"><%= user?.email || 'Not Available' %></p>
                             </div>
 
-                            <a href="/profile" class="flex items-center px-4 py-2.5 text-xs text-gray-300 hover:bg-gold-400/10 hover:text-gold-400 transition-colors">
+                            <a href="/profile" class="flex items-center px-4 py-2.5 text-xs text-gold-400 hover:bg-gold-400/10 transition-colors">
                                 <i class="fa-regular fa-user w-5"></i> Profile
                             </a>
                             <a href="/bookings/myBookings" class="flex items-center px-4 py-2.5 text-xs text-gray-300 hover:bg-gold-400/10 hover:text-gold-400 transition-colors">
                                 <i class="fa-regular fa-bookmark w-5"></i> My Bookings
                             </a>
 
-                            <% if(user.role === 'owner') { %>
+                            <% if(user?.role === 'owner') { %>
                                 <a href="/owner/dashboard" class="flex items-center px-4 py-2.5 text-xs text-gold-400 hover:bg-gold-400/10 transition-colors border-t border-white/5">
                                     <i class="fa-solid fa-utensils w-5"></i> Owner Dashboard
                                 </a>
                             <% } %>
 
-                            <% if(user.role === 'admin') { %>
+                            <% if(user?.role === 'admin') { %>
                                 <a href="/admin/dashboard" class="flex items-center px-4 py-2.5 text-xs text-gold-400 hover:bg-gold-400/10 transition-colors border-t border-white/5">
                                     <i class="fa-solid fa-shield-halved w-5"></i> Admin Dashboard
                                 </a>
@@ -160,7 +177,6 @@
                         </div>
                     </div>
                 <% } else { %>
-                    <!-- Guest Navigation -->
                     <a href="/user/login" class="text-xs font-semibold uppercase tracking-widest text-white hover:text-gold-400 transition-colors">Log In</a>
                     <a href="/user/signup" class="px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-widest bg-gradient-to-r from-gold-500 to-gold-400 text-black hover:from-gold-400 hover:to-gold-300 transition-all duration-300 shadow-lg shadow-gold-500/20">
                         Sign Up
@@ -171,69 +187,58 @@
     </header>
 
     <!-- HERO SECTION -->
-    <section class="relative h-screen w-full overflow-hidden">
-        <!-- Hero Background Swiper -->
-        <div class="swiper heroSwiper h-full w-full">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide overflow-hidden">
-                    <div class="hero-bg h-full w-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=2000');"></div>
-                </div>
-                <div class="swiper-slide overflow-hidden">
-                    <div class="hero-bg h-full w-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=2000');"></div>
-                </div>
-                <div class="swiper-slide overflow-hidden">
-                    <div class="hero-bg h-full w-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&q=80&w=2000');"></div>
-                </div>
-                <div class="swiper-slide overflow-hidden">
-                    <div class="hero-bg h-full w-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=2000');"></div>
-                </div>
-                <div class="swiper-slide overflow-hidden">
-                    <div class="hero-bg h-full w-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&q=80&w=2000');"></div>
-                </div>
-            </div>
+    <section class="relative h-screen w-full overflow-hidden flex items-center justify-center">
+        
+        <!-- Warm Ambient Background Image -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="hero-bg" style="background-image:url('/images/img.jpg');"></div>
         </div>
 
-        <!-- Dark Overlay Matrix -->
-        <div class="absolute inset-0 z-10 bg-gradient-to-t from-dark-900 via-dark-900/60 to-dark-900/40 pointer-events-none"></div>
+        <!-- Soft Radial Overlay -->
+        <div class="absolute inset-0 z-10 hero-overlay pointer-events-none"></div>
 
-        <!-- Hero Content Layer -->
-        <div class="absolute inset-0 z-20 flex flex-col justify-center items-center text-center px-4 pt-20">
-            <div class="max-w-4xl mx-auto space-y-6 hero-text-anim">
-                <span class="inline-block text-xs uppercase tracking-[0.3em] text-gold-400 font-semibold px-4 py-1.5 rounded-full border border-gold-400/30 glass-panel">
-                    Curation for the Discerning Palate
+        <!-- Minimalist Center Content Layer -->
+        <div class="relative z-20 max-w-5xl mx-auto px-6 text-center pt-12 space-y-6">
+            
+            <!-- Elegant Top Subtitle -->
+            <div class="hero-text-anim">
+                <span class="text-[10px] sm:text-xs uppercase tracking-[0.35em] text-gold-400/90 font-medium px-4 py-1.5 rounded-full border border-gold-400/20 bg-black/30 backdrop-blur-md">
+                    Exquisite Dining Experiences
                 </span>
-                <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-normal tracking-tight text-white leading-tight">
-                    EXQUISITE DINING <br>
-                    <span class="italic font-light gold-gradient-text">EXPERIENCES</span>
-                </h1>
             </div>
 
+            <!-- Refined Main Headline -->
+            <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-normal text-white/95 tracking-wide leading-tight hero-text-anim">
+                Curation for the <br class="hidden sm:inline">
+                <span class="italic font-light text-gold-300">Discerning Palate</span>
+            </h1>
+
             <!-- Floating Search Widget -->
-            <div class="w-full max-w-5xl mt-12 px-4 hero-search-anim">
-                <form action="/restaurants" method="GET" class="glass-panel p-4 md:p-6 rounded-2xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4 border border-gold-400/30">
+            <div class="pt-6 max-w-4xl mx-auto hero-search-anim">
+                <form action="/restaurants" method="GET" class="glass-panel-subtle p-3 md:p-4 rounded-2xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-center justify-between gap-3 border border-white/10">
                     
                     <!-- Search Input -->
                     <div class="flex items-center w-full md:w-1/4 px-4 py-2 border-b md:border-b-0 md:border-r border-white/10">
-                        <i class="fa-solid fa-magnifying-glass text-gold-400 mr-3"></i>
-                        <input type="text" name="search" placeholder="Restaurant or Cuisine..." class="w-full bg-transparent text-sm text-white placeholder-gray-400 focus:outline-none">
+                        <i class="fa-solid fa-magnifying-glass text-gold-400/80 mr-3 text-xs"></i>
+                        <input type="text" name="search" placeholder="Search cuisines, restaurants..." class="w-full bg-transparent text-xs text-white placeholder-gray-300/70 focus:outline-none">
                     </div>
 
                     <!-- Location Input -->
                     <div class="flex items-center w-full md:w-1/4 px-4 py-2 border-b md:border-b-0 md:border-r border-white/10">
-                        <i class="fa-solid fa-location-dot text-gold-400 mr-3"></i>
-                        <input type="text" name="location" placeholder="City or Neighborhood" class="w-full bg-transparent text-sm text-white placeholder-gray-400 focus:outline-none">
+                        <i class="fa-solid fa-location-dot text-gold-400/80 mr-3 text-xs"></i>
+                        <input type="text" name="location" placeholder="Location (e.g. London)" class="w-full bg-transparent text-xs text-white placeholder-gray-300/70 focus:outline-none">
                     </div>
 
                     <!-- Date Selection -->
                     <div class="flex items-center w-full md:w-1/5 px-4 py-2 border-b md:border-b-0 md:border-r border-white/10">
-                        <i class="fa-regular fa-calendar text-gold-400 mr-3"></i>
-                        <input type="date" name="date" class="w-full bg-transparent text-sm text-white focus:outline-none [color-scheme:dark]">
+                        <i class="fa-regular fa-calendar text-gold-400/80 mr-3 text-xs"></i>
+                        <input type="date" name="date" class="w-full bg-transparent text-xs text-white/90 focus:outline-none [color-scheme:dark]">
                     </div>
 
                     <!-- Guests Selection -->
                     <div class="flex items-center w-full md:w-1/6 px-4 py-2">
-                        <i class="fa-solid fa-user-group text-gold-400 mr-3"></i>
-                        <select name="guests" class="w-full bg-transparent text-sm text-white focus:outline-none cursor-pointer">
+                        <i class="fa-solid fa-user-group text-gold-400/80 mr-3 text-xs"></i>
+                        <select name="guests" class="w-full bg-transparent text-xs text-white/90 focus:outline-none cursor-pointer">
                             <option value="1" class="bg-dark-800 text-white">1 Guest</option>
                             <option value="2" selected class="bg-dark-800 text-white">2 Guests</option>
                             <option value="3" class="bg-dark-800 text-white">3 Guests</option>
@@ -242,23 +247,29 @@
                         </select>
                     </div>
 
-                    <!-- Submit Button -->
-                    <button type="submit" class="w-full md:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-gold-500 to-gold-400 text-black font-semibold text-xs uppercase tracking-widest hover:from-gold-400 hover:to-gold-300 transition-all duration-300 shadow-lg shadow-gold-500/20 whitespace-nowrap">
-                        Find Table
+                    <!-- CTA Button -->
+                    <button type="submit" class="w-full md:w-auto px-7 py-3 rounded-full bg-gold-400 hover:bg-gold-300 text-black font-semibold text-xs uppercase tracking-widest transition-all duration-300 whitespace-nowrap shadow-md">
+                        Find a Table
                     </button>
                 </form>
             </div>
+
         </div>
     </section>
 
     <!-- FEATURED RESTAURANTS SECTION -->
- 
-    <section class="py-24 px-6 lg:px-12 max-w-7xl mx-auto overflow-hidden">
+    <section class="py-20 px-6 lg:px-12 max-w-7xl mx-auto overflow-hidden relative">
+    
+    <!-- Ambient Radial Lighting Effect -->
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-gold-400/10 rounded-full blur-[120px] pointer-events-none"></div>
+
     <!-- Header with Swiper Navigation Buttons -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
         <div>
-            <span class="text-xs uppercase tracking-[0.25em] text-gold-400 font-semibold">Michelin Standard</span>
-            <h2 class="font-serif text-3xl lg:text-4xl font-normal text-white mt-2">Featured Culinary Destinations</h2>
+            <span class="text-xs uppercase tracking-[0.25em] text-gold-400 font-semibold flex items-center gap-2">
+                <i class="fa-solid fa-star text-[10px] text-gold-400"></i> Michelin Standard
+            </span>
+            <h2 class="font-serif text-3xl lg:text-5xl font-normal text-white mt-2">Featured Culinary Destinations</h2>
         </div>
         
         <div class="flex items-center space-x-6">
@@ -268,72 +279,93 @@
 
             <!-- Swiper Navigation Arrows -->
             <div class="flex space-x-3">
-                <button id="featured-prev" class="w-10 h-10 rounded-full border border-white/10 hover:border-gold-400/60 flex items-center justify-center text-gray-300 hover:text-gold-400 transition-all bg-dark-800">
+                <button id="featured-prev" class="w-11 h-11 rounded-full border border-gold-400/30 hover:border-gold-400 flex items-center justify-center text-gray-300 hover:text-gold-400 transition-all bg-dark-800/80 shadow-md">
                     <i class="fa-solid fa-chevron-left text-xs"></i>
                 </button>
-                <button id="featured-next" class="w-10 h-10 rounded-full border border-white/10 hover:border-gold-400/60 flex items-center justify-center text-gray-300 hover:text-gold-400 transition-all bg-dark-800">
+                <button id="featured-next" class="w-11 h-11 rounded-full border border-gold-400/30 hover:border-gold-400 flex items-center justify-center text-gray-300 hover:text-gold-400 transition-all bg-dark-800/80 shadow-md">
                     <i class="fa-solid fa-chevron-right text-xs"></i>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Swiper Carousel Container -->
+    <!-- Swiper Carousel Container (Enlarged Luxury Cards Layout) -->
     <% if(locals.featuredRestaurants && featuredRestaurants.length > 0) { %>
         <div class="swiper featuredSwiper !overflow-visible">
             <div class="swiper-wrapper">
                 <% featuredRestaurants.forEach(restaurant => { %>
                     <div class="swiper-slide !h-auto">
                         <div onclick="window.location.href='/restaurants/<%= restaurant.slug %>'" 
-                             class="group bg-dark-800 rounded-2xl overflow-hidden border border-white/5 hover:border-gold-400/40 transition-all duration-500 cursor-pointer flex flex-col h-full hover:shadow-xl hover:shadow-gold-500/5">
+                             class="group glass-card-featured rounded-3xl overflow-hidden border border-gold-400/20 hover:border-gold-400/70 transition-all duration-500 cursor-pointer flex flex-col h-full hover:shadow-gold-glow hover:-translate-y-1.5">
                             
-                            <!-- Medium Image Container -->
-                            <div class="relative h-48 overflow-hidden">
-                                <img src="<%= restaurant.images && restaurant.images.length > 0 ? restaurant.images[0] : 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&q=80&w=800' %>" 
+                            <!-- Larger Luxury Image Container -->
+                            <div class="relative h-64 overflow-hidden">
+                                 <%                         
+    const defaultImages = [
+    "/images/rest1.jpg",
+    "/images/rest2.jpg",
+    "/images/rest3.jpg",
+    "/images/rest4.jpg",
+    "/images/rest5.jpg",
+    "/images/img1.jpg",
+    "/images/img2.jpg",
+    "/images/img3.jpg",
+    "/images/img4.jpg",    
+];
+
+const randomDefault =
+    defaultImages[Math.floor(Math.random() * defaultImages.length)];
+
+const image =
+    (restaurant.images && restaurant.images.length > 0)
+        ? restaurant.images[0]
+        : randomDefault;
+%>
+                                    <img src="<%= image %>" 
                                      alt="<%= restaurant.name %>" 
-                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out">
-                                <div class="absolute inset-0 bg-gradient-to-t from-dark-800 via-transparent to-transparent"></div>
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out">
+                                <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-dark-900/20 to-transparent"></div>
                                 
                                 <!-- Badges -->
-                                <div class="absolute top-3 left-3 flex gap-2">
-                                    <span class="bg-dark-900/80 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-wider text-gold-400 font-semibold border border-gold-400/30">
+                                <div class="absolute top-4 left-4 flex gap-2">
+                                    <span class="bg-dark-900/90 backdrop-blur-md px-3.5 py-1 rounded-full text-[10px] uppercase tracking-wider text-gold-400 font-semibold border border-gold-400/40 shadow-lg">
                                         <%= restaurant.cuisine %>
                                     </span>
                                 </div>
-                                <div class="absolute top-3 right-3">
-                                    <span class="bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full text-[11px] text-white font-medium">
-                                        <%= restaurant.priceRange || '$$$$' %>
+                                <div class="absolute top-4 right-4">
+                                    <span class="bg-black/80 backdrop-blur-md px-3.5 py-1 rounded-full text-[10px] uppercase tracking-widest text-gold-300 border border-gold-400/40 shadow-lg">
+                                        Avg ₹<%= restaurant.priceRange || 1000 %> • 2 Guests
                                     </span>
                                 </div>
                             </div>
 
-                            <!-- Details Container -->
-                            <div class="p-5 flex flex-col flex-grow justify-between space-y-4">
+                            <!-- Details Container with Refined Spacing -->
+                            <div class="p-6 flex flex-col flex-grow justify-between space-y-5">
                                 <div>
-                                    <h3 class="font-serif text-xl text-white group-hover:text-gold-400 transition-colors truncate">
+                                    <h3 class="font-serif text-2xl text-white group-hover:text-gold-400 transition-colors truncate">
                                         <%= restaurant.name %>
                                     </h3>
                                     
-                                    <p class="text-[11px] text-gray-400 mt-1 flex items-center truncate">
+                                    <p class="text-xs text-gray-300 mt-2 flex items-center truncate">
                                         <i class="fa-solid fa-location-dot text-gold-400 mr-2 flex-shrink-0"></i>
                                         <%= restaurant.location %>
                                     </p>
 
                                     <% if(restaurant.chef) { %>
-                                        <p class="text-[11px] text-gray-400 mt-1 flex items-center truncate">
+                                        <p class="text-xs text-gray-400 mt-1 flex items-center truncate">
                                             <i class="fa-solid fa-hat-chef text-gold-400 mr-2 flex-shrink-0"></i>
                                             Chef <%= restaurant.chef %>
                                         </p>
                                     <% } %>
 
-                                    <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-[11px] text-gray-400">
-                                        <span><i class="fa-regular fa-clock mr-1 text-gold-400"></i> <%= restaurant.openingTime || '17:00' %></span>
+                                    <div class="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-gray-400">
+                                        <span><i class="fa-regular fa-clock mr-1.5 text-gold-400"></i> <%= restaurant.openingTime || '17:00' %></span>
                                         <span class="<%= restaurant.status === 'Open' ? 'text-emerald-400' : 'text-amber-400' %> font-medium">• <%= restaurant.status || 'Accepting' %></span>
                                     </div>
                                 </div>
 
                                 <!-- CTA Button -->
-                                <button class="w-full py-2.5 rounded-xl border border-gold-400/30 text-gold-400 group-hover:bg-gold-400 group-hover:text-black font-semibold text-[11px] uppercase tracking-widest transition-all duration-300">
+                                <button class="w-full py-3.5 rounded-2xl border border-gold-400/40 text-gold-400 group-hover:bg-gradient-to-r group-hover:from-gold-500 group-hover:to-gold-400 group-hover:text-black font-semibold text-xs uppercase tracking-widest transition-all duration-300 shadow-md">
                                     Reserve Table
                                 </button>
                             </div>
@@ -343,18 +375,19 @@
             </div>
         </div>
     <% } else { %>
-        <div class="py-12 text-center text-gray-500 font-serif">
+        <div class="py-16 text-center text-gray-400 font-serif border border-white/5 rounded-2xl bg-dark-800/40">
             No featured dining destinations currently available.
         </div>
     <% } %>
 </section>
-<!-- Swiper Initialization Script -->
+
+<!-- Swiper Initialization Script (Responsive Card Sizing) -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         if (document.querySelector('.featuredSwiper')) {
             new Swiper('.featuredSwiper', {
                 slidesPerView: 1,
-                spaceBetween: 20,
+                spaceBetween: 28,
                 loop: true,
                 autoplay: {
                     delay: 5000,
@@ -367,15 +400,11 @@
                 breakpoints: {
                     640: {
                         slidesPerView: 2,
-                        spaceBetween: 20,
+                        spaceBetween: 24,
                     },
                     1024: {
                         slidesPerView: 3,
-                        spaceBetween: 24,
-                    },
-                    1280: {
-                        slidesPerView: 4,
-                        spaceBetween: 24,
+                        spaceBetween: 28,
                     }
                 }
             });
@@ -385,18 +414,18 @@
 
   
     <!-- TRENDING SECTION -->
-<section class="py-24 bg-dark-800 border-y border-white/5 relative overflow-hidden">
-    <div class="max-w-7xl mx-auto px-6 lg:px-12 mb-12 flex justify-between items-end">
+<section class="py-20 bg-dark-800/60 border-y border-gold-400/10 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 mb-10 flex justify-between items-end">
         <div>
             <span class="text-xs uppercase tracking-[0.25em] text-gold-400 font-semibold">In High Demand</span>
             <h2 class="font-serif text-4xl text-white mt-2">Trending This Week</h2>
         </div>
         <!-- Custom Swiper Controls -->
         <div class="flex space-x-3">
-            <button id="trending-prev" class="w-12 h-12 rounded-full border border-white/10 hover:border-gold-400 flex items-center justify-center text-white hover:text-gold-400 transition-colors">
+            <button id="trending-prev" class="w-11 h-11 rounded-full border border-gold-400/30 hover:border-gold-400 flex items-center justify-center text-white hover:text-gold-400 transition-colors bg-dark-700/60">
                 <i class="fa-solid fa-chevron-left text-sm"></i>
             </button>
-            <button id="trending-next" class="w-12 h-12 rounded-full border border-white/10 hover:border-gold-400 flex items-center justify-center text-white hover:text-gold-400 transition-colors">
+            <button id="trending-next" class="w-11 h-11 rounded-full border border-gold-400/30 hover:border-gold-400 flex items-center justify-center text-white hover:text-gold-400 transition-colors bg-dark-700/60">
                 <i class="fa-solid fa-chevron-right text-sm"></i>
             </button>
         </div>
@@ -410,13 +439,33 @@
                         <!-- Dynamic Exclusive Restaurant Item -->
                         <div class="swiper-slide w-80">
                             <div onclick="window.location.href='/restaurants/<%= restaurant.slug %>'" 
-                                 class="relative rounded-2xl overflow-hidden group border border-white/5 hover:border-gold-400/40 transition-all duration-500 cursor-pointer">
-                                
-                                <img src="<%= (restaurant.images && restaurant.images.length > 0) ? restaurant.images[0] : 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=800' %>" 
+                                 class="relative rounded-2xl overflow-hidden group border border-gold-400/20 hover:border-gold-400/60 transition-all duration-500 cursor-pointer shadow-lg">
+    <%                         
+    const defaultImages = [
+    "/images/rest1.jpg",
+    "/images/rest2.jpg",
+    "/images/rest3.jpg",
+    "/images/rest4.jpg",
+    "/images/rest5.jpg",
+    "/images/img1.jpg",
+    "/images/img2.jpg",
+    "/images/img3.jpg",
+    "/images/img4.jpg",    
+];
+
+const randomDefault =
+    defaultImages[Math.floor(Math.random() * defaultImages.length)];
+
+const image =
+    (restaurant.images && restaurant.images.length > 0)
+        ? restaurant.images[0]
+        : randomDefault;
+%>
+                                <img src="<%= image %>" 
                                      alt="<%= restaurant.name %>" 
                                      class="h-96 w-full object-cover group-hover:scale-105 transition-transform duration-700">
                                 
-                                <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-dark-900/30 to-transparent"></div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-dark-900/40 to-transparent"></div>
                                 
                                 <!-- Exclusive Badge -->
                                 <div class="absolute top-4 right-4">
@@ -426,13 +475,13 @@
                                 </div>
 
                                 <div class="absolute bottom-6 left-6 right-6">
-                                    <span class="text-[10px] text-gold-400 uppercase tracking-widest font-semibold">
-                                        <%= restaurant.cuisine %> • <%= restaurant.priceRange || '$$$$' %>
+                                    <span class="bg-black/70 backdrop-blur-lg px-3 py-1 rounded-full text-[10px] uppercase tracking-widest text-gold-300 border border-gold-400/30 inline-block mb-2">
+                                        Avg ₹<%= restaurant.priceRange || 1000 %> • 2 Guests
                                     </span>
-                                    <h4 class="font-serif text-xl text-white mt-1 group-hover:text-gold-400 transition-colors truncate">
+                                    <h4 class="font-serif text-2xl text-white group-hover:text-gold-400 transition-colors truncate">
                                         <%= restaurant.name %>
                                     </h4>
-                                    <p class="text-xs text-gray-400 mt-1 truncate">
+                                    <p class="text-xs text-gray-300 mt-1 truncate">
                                         <i class="fa-solid fa-location-dot text-gold-400 mr-1.5"></i><%= restaurant.location %>
                                     </p>
                                     <% if (restaurant.chef) { %>
@@ -445,9 +494,9 @@
                         </div>
                     <% }); %>
                 <% } else { %>
-                    <!-- Fallback Static Cards (If no database items found) -->
+                    <!-- Fallback Static Cards -->
                     <div class="swiper-slide w-80">
-                        <div class="relative rounded-2xl overflow-hidden group border border-white/5">
+                        <div class="relative rounded-2xl overflow-hidden group border border-white/10">
                             <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=800" class="h-96 w-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-dark-900/20 to-transparent"></div>
                             <div class="absolute bottom-6 left-6 right-6">
@@ -458,7 +507,7 @@
                         </div>
                     </div>
                     <div class="swiper-slide w-80">
-                        <div class="relative rounded-2xl overflow-hidden group border border-white/5">
+                        <div class="relative rounded-2xl overflow-hidden group border border-white/10">
                             <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=800" class="h-96 w-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-dark-900/20 to-transparent"></div>
                             <div class="absolute bottom-6 left-6 right-6">
@@ -469,7 +518,7 @@
                         </div>
                     </div>
                     <div class="swiper-slide w-80">
-                        <div class="relative rounded-2xl overflow-hidden group border border-white/5">
+                        <div class="relative rounded-2xl overflow-hidden group border border-white/10">
                             <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=800" class="h-96 w-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-dark-900/20 to-transparent"></div>
                             <div class="absolute bottom-6 left-6 right-6">
@@ -480,7 +529,7 @@
                         </div>
                     </div>
                     <div class="swiper-slide w-80">
-                        <div class="relative rounded-2xl overflow-hidden group border border-white/5">
+                        <div class="relative rounded-2xl overflow-hidden group border border-white/10">
                             <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=800" class="h-96 w-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-dark-900/20 to-transparent"></div>
                             <div class="absolute bottom-6 left-6 right-6">
@@ -497,100 +546,81 @@
 </section>
 
     <!-- BROWSE BY CUISINE -->
-    <section class="py-28 px-6 lg:px-12 max-w-7xl mx-auto">
-        <div class="text-center max-w-xl mx-auto mb-16">
-            <span class="text-xs uppercase tracking-[0.25em] text-gold-400 font-semibold">Taste Exploration</span>
-            <h2 class="font-serif text-4xl text-white mt-2">Browse By Cuisine</h2>
+<section id="cuisines" class="py-20 overflow-hidden relative">
+            <div class="max-w-7xl mx-auto px-6 lg:px-12 mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <span class="text-xs uppercase tracking-[0.25em] text-gold-400 font-semibold">Gastronomic Spectrum</span>
+                <h2 class="font-serif text-4xl text-white mt-2">Cuisine Collections</h2>
+            </div>
+            <p class="text-xs text-gray-400 max-w-md">Filter by authentic culinary techniques, heritage recipes, and contemporary gastronomy.</p>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            <a href="/restaurants?cuisine=French" class="glass-panel p-6 rounded-2xl text-center group hover:border-gold-400/60 transition-all duration-300">
-                <div class="w-14 h-14 mx-auto rounded-full bg-gold-400/10 text-gold-400 flex items-center justify-center text-xl group-hover:scale-110 group-hover:bg-gold-400 group-hover:text-black transition-all">
-                    <i class="fa-solid fa-wine-glass"></i>
-                </div>
-                <h4 class="font-serif text-white mt-4 text-base">French</h4>
-                <p class="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Haute Cuisine</p>
-            </a>
+        <!-- Horizontal Scrollable Cards -->
+        <div class="flex space-x-6 overflow-x-auto no-scrollbar px-6 lg:px-12 pb-4">
+            <% const cuisines = [
+                { title: 'Italian', desc: 'Artisanal Pasta & Truffles', img: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&q=80&w=600' },
+                { title: 'Japanese', desc: 'Omakase & Edomae Sushi', img: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&q=80&w=600' },
+                { title: 'French', desc: 'Haute Cuisine & Cellars', img: 'https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&q=80&w=600' },
+                { title: 'Indian', desc: 'Royal Mughlai & Heritage', img: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&q=80&w=600' },
+                { title: 'Mediterranean', desc: 'Coastal Olive & Charcoal', img: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=600' },
+                { title: 'Steakhouse', desc: 'A5 Wagyu & Dry Aged', img: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=600' },
+                { title: 'Seafood', desc: 'Ocean Shellfish Reserve', img: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&q=80&w=600' },
+                { title: 'Asian Fusion', desc: 'Modern Pan-Asian Taste', img: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&q=80&w=600' }
+            ]; %>
 
-            <a href="/restaurants?cuisine=Japanese" class="glass-panel p-6 rounded-2xl text-center group hover:border-gold-400/60 transition-all duration-300">
-                <div class="w-14 h-14 mx-auto rounded-full bg-gold-400/10 text-gold-400 flex items-center justify-center text-xl group-hover:scale-110 group-hover:bg-gold-400 group-hover:text-black transition-all">
-                    <i class="fa-solid fa-bowl-rice"></i>
-                </div>
-                <h4 class="font-serif text-white mt-4 text-base">Japanese</h4>
-                <p class="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Omakase & Sushi</p>
-            </a>
-
-            <a href="/restaurants?cuisine=Italian" class="glass-panel p-6 rounded-2xl text-center group hover:border-gold-400/60 transition-all duration-300">
-                <div class="w-14 h-14 mx-auto rounded-full bg-gold-400/10 text-gold-400 flex items-center justify-center text-xl group-hover:scale-110 group-hover:bg-gold-400 group-hover:text-black transition-all">
-                    <i class="fa-solid fa-pizza-slice"></i>
-                </div>
-                <h4 class="font-serif text-white mt-4 text-base">Italian</h4>
-                <p class="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Artisanal Pasta</p>
-            </a>
-
-            <a href="/restaurants?cuisine=Steakhouse" class="glass-panel p-6 rounded-2xl text-center group hover:border-gold-400/60 transition-all duration-300">
-                <div class="w-14 h-14 mx-auto rounded-full bg-gold-400/10 text-gold-400 flex items-center justify-center text-xl group-hover:scale-110 group-hover:bg-gold-400 group-hover:text-black transition-all">
-                    <i class="fa-solid fa-drumstick-bite"></i>
-                </div>
-                <h4 class="font-serif text-white mt-4 text-base">Steakhouse</h4>
-                <p class="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Prime Cuts</p>
-            </a>
-
-            <a href="/restaurants?cuisine=Seafood" class="glass-panel p-6 rounded-2xl text-center group hover:border-gold-400/60 transition-all duration-300">
-                <div class="w-14 h-14 mx-auto rounded-full bg-gold-400/10 text-gold-400 flex items-center justify-center text-xl group-hover:scale-110 group-hover:bg-gold-400 group-hover:text-black transition-all">
-                    <i class="fa-solid fa-fish"></i>
-                </div>
-                <h4 class="font-serif text-white mt-4 text-base">Seafood</h4>
-                <p class="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Ocean Fresh</p>
-            </a>
-
-            <a href="/restaurants?cuisine=Modern" class="glass-panel p-6 rounded-2xl text-center group hover:border-gold-400/60 transition-all duration-300">
-                <div class="w-14 h-14 mx-auto rounded-full bg-gold-400/10 text-gold-400 flex items-center justify-center text-xl group-hover:scale-110 group-hover:bg-gold-400 group-hover:text-black transition-all">
-                    <i class="fa-solid fa-utensils"></i>
-                </div>
-                <h4 class="font-serif text-white mt-4 text-base">Modern</h4>
-                <p class="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Experimental</p>
-            </a>
+            <% cuisines.forEach(c => { %>
+                <a href="/restaurants?cuisine=<%= c.title %>" class="flex-shrink-0 w-72 rounded-2xl overflow-hidden glass-panel border border-gold-400/20 hover:border-gold-400/60 transition-all group block shadow-md">
+                    <div class="h-44 relative overflow-hidden">
+                        <img src="<%= c.img %>" alt="<%= c.title %>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="p-5">
+                        <h4 class="font-serif text-xl text-white group-hover:text-gold-400 transition-colors"><%= c.title %></h4>
+                        <p class="text-xs text-gray-400 mt-1"><%= c.desc %></p>
+                    </div>
+                </a>
+            <% }); %>
         </div>
     </section>
 
+
     <!-- WHY CHOOSE OPENDINE -->
-    <section class="py-24 bg-dark-800 border-t border-white/5">
+    <section class="py-20 bg-dark-800/40 border-t border-gold-400/10">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-            <div class="text-center max-w-xl mx-auto mb-16">
+            <div class="text-center max-w-xl mx-auto mb-12">
                 <span class="text-xs uppercase tracking-[0.25em] text-gold-400 font-semibold">The Gold Standard</span>
                 <h2 class="font-serif text-4xl text-white mt-2">Why OpenDine</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="p-8 rounded-2xl bg-dark-900 border border-white/5 relative group hover:border-gold-400/30 transition-all">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="p-8 rounded-2xl bg-dark-800/80 border border-gold-400/20 relative group hover:border-gold-400/50 transition-all">
                     <span class="text-gold-400 text-3xl"><i class="fa-solid fa-award"></i></span>
-                    <h3 class="font-serif text-xl text-white mt-6">Verified Restaurants</h3>
-                    <p class="text-xs text-gray-400 mt-3 leading-relaxed">
+                    <h3 class="font-serif text-xl text-white mt-5">Verified Restaurants</h3>
+                    <p class="text-xs text-gray-400 mt-2 leading-relaxed">
                         Every establishment in our collection undergoes rigorous vetting for service and culinary mastery.
                     </p>
                 </div>
 
-                <div class="p-8 rounded-2xl bg-dark-900 border border-white/5 relative group hover:border-gold-400/30 transition-all">
+                <div class="p-8 rounded-2xl bg-dark-800/80 border border-gold-400/20 relative group hover:border-gold-400/50 transition-all">
                     <span class="text-gold-400 text-3xl"><i class="fa-solid fa-bolt"></i></span>
-                    <h3 class="font-serif text-xl text-white mt-6">Instant Booking</h3>
-                    <p class="text-xs text-gray-400 mt-3 leading-relaxed">
+                    <h3 class="font-serif text-xl text-white mt-5">Instant Booking</h3>
+                    <p class="text-xs text-gray-400 mt-2 leading-relaxed">
                         Direct real-time table integration eliminates waiting and secures prime dining slots immediately.
                     </p>
                 </div>
 
-                <div class="p-8 rounded-2xl bg-dark-900 border border-white/5 relative group hover:border-gold-400/30 transition-all">
+                <div class="p-8 rounded-2xl bg-dark-800/80 border border-gold-400/20 relative group hover:border-gold-400/50 transition-all">
                     <span class="text-gold-400 text-3xl"><i class="fa-solid fa-shield-halved"></i></span>
-                    <h3 class="font-serif text-xl text-white mt-6">Secure Payments</h3>
-                    <p class="text-xs text-gray-400 mt-3 leading-relaxed">
+                    <h3 class="font-serif text-xl text-white mt-5">Secure Payments</h3>
+                    <p class="text-xs text-gray-400 mt-2 leading-relaxed">
                         Encrypted reservation deposits and seamless concierge billing protection.
                     </p>
                 </div>
 
-                <div class="p-8 rounded-2xl bg-dark-900 border border-white/5 relative group hover:border-gold-400/30 transition-all">
+                <div class="p-8 rounded-2xl bg-dark-800/80 border border-gold-400/20 relative group hover:border-gold-400/50 transition-all">
                     <span class="text-gold-400 text-3xl"><i class="fa-solid fa-crown"></i></span>
-                    <h3 class="font-serif text-xl text-white mt-6">Luxury Dining</h3>
-                    <p class="text-xs text-gray-400 mt-3 leading-relaxed">
+                    <h3 class="font-serif text-xl text-white mt-5">Luxury Dining</h3>
+                    <p class="text-xs text-gray-400 mt-2 leading-relaxed">
                         Access exclusive chef tables, personalized menus, and private dining rooms worldwide.
                     </p>
                 </div>
@@ -599,13 +629,13 @@
     </section>
 
     <!-- CUSTOMER TESTIMONIALS -->
-    <section class="py-28 px-6 lg:px-12 max-w-7xl mx-auto">
-        <div class="text-center max-w-xl mx-auto mb-16">
+    <section class="py-20 px-6 lg:px-12 max-w-7xl mx-auto">
+        <div class="text-center max-w-xl mx-auto mb-12">
             <span class="text-xs uppercase tracking-[0.25em] text-gold-400 font-semibold">Client Stories</span>
             <h2 class="font-serif text-4xl text-white mt-2">Patron Reviews</h2>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="glass-panel p-8 rounded-2xl flex flex-col justify-between">
                 <div>
                     <div class="text-gold-400 text-xs space-x-1">
@@ -663,18 +693,18 @@
     </section>
 
     <!-- NEWSLETTER -->
-    <section class="py-24 bg-dark-800 border-t border-white/5 px-6 lg:px-12">
-        <div class="max-w-4xl mx-auto glass-panel p-10 md:p-16 rounded-3xl text-center relative overflow-hidden border border-gold-400/20">
+    <section class="py-20 bg-dark-800/50 border-t border-gold-400/10 px-6 lg:px-12">
+        <div class="max-w-4xl mx-auto glass-panel p-10 md:p-14 rounded-3xl text-center relative overflow-hidden border border-gold-400/30 shadow-gold-glow">
             <span class="text-xs uppercase tracking-[0.25em] text-gold-400 font-semibold">Exclusive Access</span>
             <h2 class="font-serif text-3xl md:text-5xl text-white mt-2">Receive Curated Invitations</h2>
-            <p class="text-xs text-gray-400 mt-4 max-w-lg mx-auto">
+            <p class="text-xs text-gray-400 mt-3 max-w-lg mx-auto">
                 Subscribe to receive private invitations to pop-up dining events, seasonal tasting menus, and new Michelin additions.
             </p>
 
             <form action="/subscribe" method="POST" class="mt-8 flex flex-col sm:flex-row items-center justify-center max-w-md mx-auto gap-3">
                 <input type="email" name="email" required placeholder="Enter your email address..." 
-                       class="w-full px-6 py-3.5 rounded-full bg-dark-900 border border-white/10 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-gold-400">
-                <button type="submit" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gold-400 text-black font-semibold text-xs uppercase tracking-widest hover:bg-gold-300 transition-colors whitespace-nowrap">
+                       class="w-full px-6 py-3.5 rounded-full bg-dark-900/90 border border-white/15 text-xs text-white placeholder-gray-400 focus:outline-none focus:border-gold-400">
+                <button type="submit" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gold-400 text-black font-semibold text-xs uppercase tracking-widest hover:bg-gold-300 transition-colors whitespace-nowrap shadow-md">
                     Join Club
                 </button>
             </form>
@@ -682,16 +712,16 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="bg-dark-900 border-t border-white/10 pt-20 pb-12 text-gray-400">
+    <footer class="bg-dark-900 border-t border-white/10 pt-16 pb-12 text-gray-400">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                 <!-- Brand Info -->
                 <div class="space-y-4">
                     <a href="/" class="flex items-center space-x-3">
                         <span class="w-8 h-8 rounded-full border border-gold-400/40 flex items-center justify-center bg-dark-800 text-gold-400 font-serif font-bold">O</span>
                         <span class="font-serif text-xl tracking-widest text-white font-semibold uppercase">Open<span class="text-gold-400">Dine</span></span>
                     </a>
-                    <p class="text-xs text-gray-500 leading-relaxed">
+                    <p class="text-xs text-gray-400 leading-relaxed">
                         The world’s premier table booking platform for Michelin-starred and luxury culinary establishments.
                     </p>
                 </div>
@@ -726,13 +756,13 @@
                         <a href="#" class="w-9 h-9 rounded-full bg-dark-800 border border-white/10 flex items-center justify-center text-gray-400 hover:text-gold-400 hover:border-gold-400 transition-all"><i class="fa-brands fa-x-twitter text-xs"></i></a>
                         <a href="#" class="w-9 h-9 rounded-full bg-dark-800 border border-white/10 flex items-center justify-center text-gray-400 hover:text-gold-400 hover:border-gold-400 transition-all"><i class="fa-brands fa-linkedin-in text-xs"></i></a>
                     </div>
-                    <p class="text-[10px] text-gray-500">Concierge Desk: concierge@opendine.com</p>
+                    <p class="text-[10px] text-gray-400">Concierge Desk: concierge@opendine.com</p>
                 </div>
             </div>
 
-            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between text-[11px] text-gray-500">
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between text-[11px] text-gray-400">
                 <p>&copy; 2026 OpenDine Inc. All rights reserved.</p>
-                <p class="mt-2 md:mt-0 uppercase tracking-widest text-[9px]">Crafted for Exceptional Taste</p>
+                <p class="mt-2 md:mt-0 uppercase tracking-widest text-[9px] text-gold-400/80">Crafted for Exceptional Taste</p>
             </div>
         </div>
     </footer>

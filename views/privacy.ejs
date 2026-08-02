@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — OpenDine</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            100: '#FDF8EC',
+                            300: '#E2C285',
+                            400: '#D4AF37',
+                            500: '#C59B27',
+                            600: '#A37E1C',
+                        },
+                        dark: {
+                            900: '#0B0C0E',
+                            800: '#121418',
+                            700: '#1C1F26',
+                            600: '#2A2E39',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .glass-panel {
+            background: rgba(18, 20, 24, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF0CA 0%, #D4AF37 50%, #996515 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0C0E;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A2E39;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-gray-200 font-sans antialiased overflow-x-hidden selection:bg-gold-400 selection:text-black">
+
+    <!-- NAVBAR -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
+            <div class="flex items-center space-x-12">
+                <a href="/" class="flex items-center space-x-3 group">
+                    <span class="w-8 h-8 rounded-full border border-gold-400/40 flex items-center justify-center bg-dark-800 text-gold-400 font-serif font-bold">O</span>
+                    <span class="font-serif text-xl tracking-widest text-white font-semibold uppercase">Open<span class="text-gold-400">Dine</span></span>
+                </a>
+
+                <nav class="hidden md:flex items-center space-x-8 text-xs font-medium uppercase tracking-widest">
+                    <a href="/discover" class="text-gray-300 hover:text-gold-400 transition-colors">Discover</a>
+                    <a href="/restaurants" class="text-gray-300 hover:text-gold-400 transition-colors">Restaurants</a>
+                    <a href="/privacy" class="text-gold-400 font-semibold transition-colors">Privacy Policy</a>
+                </nav>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <% if(locals.user) { %>
+                    <a href="/profile" class="text-xs uppercase text-gold-400 font-semibold"><%= user.name %></a>
+                <% } else { %>
+                    <a href="/user/login" class="text-xs uppercase text-white hover:text-gold-400 transition-colors">Log In</a>
+                <% } %>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO HEADER -->
+    <section class="pt-36 pb-12 px-6 lg:px-12 max-w-4xl mx-auto text-center space-y-4">
+        <span class="text-[10px] uppercase tracking-[0.3em] text-gold-400 font-semibold px-4 py-1.5 rounded-full border border-gold-400/30 glass-panel">
+            Data Governance & Governance
+        </span>
+        <h1 class="font-serif text-4xl sm:text-6xl font-normal text-white">
+            Privacy <span class="italic font-light text-[#C8A04A]">Policy</span>
+        </h1>
+        <p class="text-xs text-gray-400">Effective Date: January 1, 2026 • OpenDine Hospitality Inc.</p>
+    </section>
+
+    <!-- PRIVACY POLICY CONTENT CONTAINER -->
+    <main class="max-w-4xl mx-auto px-6 lg:px-12 pb-24 space-y-10">
+        
+        <div class="glass-panel p-8 sm:p-12 rounded-3xl border border-gold-400/20 space-y-8 text-xs sm:text-sm text-gray-300 leading-relaxed font-light">
+            
+            <!-- SECTION 1 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-user-shield text-gold-400 text-lg mr-3"></i> 1. Information We Collect
+                </h3>
+                <p>
+                    OpenDine collects minimal necessary data required to facilitate real-time concierge table reservations and provide tailored dining hospitality.
+                </p>
+                <ul class="list-disc pl-5 space-y-2 text-gray-400">
+                    <li><strong class="text-white font-medium">Personal Credentials:</strong> Full name, verified email address, phone number, and avatar image.</li>
+                    <li><strong class="text-white font-medium">Booking Specifications:</strong> Reservation dates, guest party size, special dietary requests, and dining occasion notes.</li>
+                    <li><strong class="text-white font-medium">Technical Data:</strong> IP address, device telemetry, browser cookies, and geographic city selection.</li>
+                </ul>
+            </section>
+
+            <!-- SECTION 2 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-lock text-gold-400 text-lg mr-3"></i> 2. Payment & Deposit Security
+                </h3>
+                <p>
+                    OpenDine does not store raw credit card numbers or banking credentials on our primary servers. All reservation table deposit billing is processed through PCI-DSS Level 1 compliant gateway partners (e.g., Razorpay/Stripe) utilizing 256-bit SSL encryption.
+                </p>
+            </section>
+
+            <!-- SECTION 3 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-gear text-gold-400 text-lg mr-3"></i> 3. How We Use Your Data
+                </h3>
+                <p>Your information is strictly utilized to render fine dining concierge services:</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <div class="p-4 rounded-2xl bg-dark-800 border border-white/5 space-y-1">
+                        <h5 class="text-white font-medium">Reservation Sync</h5>
+                        <p class="text-[11px] text-gray-400">Transmitting host table bookings directly to partner restaurant management desks.</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-dark-800 border border-white/5 space-y-1">
+                        <h5 class="text-white font-medium">Concierge Notifications</h5>
+                        <p class="text-[11px] text-gray-400">Dispatching SMS & email itineraries, booking confirmations, and status updates.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-handshake text-gold-400 text-lg mr-3"></i> 4. Third-Party Service Disclosure
+                </h3>
+                <p>
+                    We never sell, lease, or monetize your personal credentials to third-party marketing brokers. Your reservation information is shared solely with the specific establishment where you hold an active reservation.
+                </p>
+            </section>
+
+            <!-- SECTION 5 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-scale-balanced text-gold-400 text-lg mr-3"></i> 5. Your Patron Rights
+                </h3>
+                <p>You maintain full control over your personal data footprint on OpenDine:</p>
+                <ul class="list-disc pl-5 space-y-1.5 text-gray-400">
+                    <li>Right to request complete export of your reservation ledger.</li>
+                    <li>Right to request immediate account termination and data purge.</li>
+                    <li>Right to opt out of non-essential promotional newsletters.</li>
+                </ul>
+            </section>
+
+            <!-- SECTION 6 -->
+            <section class="space-y-3">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-envelope-open-text text-gold-400 text-lg mr-3"></i> 6. Concierge Data Contact
+                </h3>
+                <p>
+                    For inquiries concerning data privacy or to exercise your rights, contact our Data Protection Officer:
+                </p>
+                <div class="p-5 rounded-2xl bg-dark-800 border border-gold-400/30 space-y-1">
+                    <p class="text-white font-medium">OpenDine Legal & Compliance Desk</p>
+                    <p class="text-xs text-gold-400">Email: privacy@opendine.com</p>
+                    <p class="text-[11px] text-gray-500">Response Guarantee: Within 24 Business Hours</p>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark-900 border-t border-white/10 pt-16 pb-12 text-gray-400">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between text-[11px] text-gray-500">
+            <a href="/" class="flex items-center space-x-3 mb-4 md:mb-0">
+                <span class="w-6 h-6 rounded-full border border-gold-400/40 flex items-center justify-center bg-dark-800 text-gold-400 font-serif text-xs font-bold">O</span>
+                <span class="font-serif text-sm tracking-widest text-white font-semibold uppercase">Open<span class="text-gold-400">Dine</span></span>
+            </a>
+            <p>&copy; 2026 OpenDine Inc. All rights reserved.</p>
+            <p class="mt-2 md:mt-0 uppercase tracking-widest text-[9px]">Confidentiality Guaranteed</p>
+        </div>
+    </footer>
+
+    <!-- Sticky Navbar Script -->
+    <script>
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('glass-panel', 'py-4');
+                navbar.classList.remove('py-6');
+            } else {
+                navbar.classList.remove('glass-panel', 'py-4');
+                navbar.classList.add('py-6');
+            }
+        });
+    </script>
+</body>
+</html>

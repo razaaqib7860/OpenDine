@@ -24,7 +24,7 @@
                      class="w-20 h-20 rounded-xl object-cover border border-gold-400/30 flex-shrink-0">
                 <div class="overflow-hidden">
                     <span class="text-[10px] uppercase tracking-widest text-gold-400 font-semibold">
-                        <%= restaurant.cuisine %> • <%= restaurant.priceRange || '$$$$' %>
+                       Avg ₹<%= restaurant.priceRange || 1000 %> • 2 Guests
                     </span>
                     <h4 id="drawer-res-name" class="font-serif text-xl text-white truncate mt-0.5">
                         <%= restaurant.name %>

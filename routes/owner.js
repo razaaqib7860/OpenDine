@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();   
 
 const { ownerDashboard,
+    renderRestaurantForm,
     getOwnerRestaurant,
     createOwnerRestaurant,
     updateOwnerRestaurant,
@@ -12,10 +13,13 @@ const {checkAuth,restrictTo}=require("../middleware/auth");
 
 router.get("/dashboard",ownerDashboard);
 
+router.get("/newRestaurant",restrictTo(["owner"]),renderRestaurantForm);
+
 router.get("/",checkAuth,getOwnerRestaurant);
 
 // router.post("/",createOwnerRestaurant); //middle ware for image upload
 const upload = require("../middleware/upload");
+
 router.post(
     "/",
     checkAuth,
@@ -25,7 +29,7 @@ router.post(
 
 // router.put("/",updateOwnerRestaurant);  //middle ware for image upload
 router.put(
-    "/",
+    "/restaurant/update",
     checkAuth,
     upload.array("images"),
     updateOwnerRestaurant

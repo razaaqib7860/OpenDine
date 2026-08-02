@@ -1,6 +1,7 @@
 
 const Restaurant = require("../models/restaurant");
 const Booking=require("../models/booking");
+const { renderError } = require("./error");
 
 const getRestaurants=async(req,res)=>{
     try {
@@ -53,7 +54,7 @@ const getRestaurants=async(req,res)=>{
 
     } catch (error) {
         console.error(error);
-        res.status(400).json({message:error.message});
+        renderError(req, res);
     }
 };
 
@@ -68,8 +69,8 @@ const getFeatureRestaurants=async(req,res)=>{
         featuredRestaurants
 });
     } catch (error) {
-        console.error("Get featured Restaurants Error:",error);
-        res.status(500).json({message:"server error"});
+        console.error(error);
+        renderError(req, res);
     }
 };
 
@@ -106,7 +107,7 @@ const getRestaurantBySlug=async(req,res)=>{
 
     } catch (error) {
         console.error(error);
-        res.status(400).json({message:error.message});
+        renderError(req, res);
     }
 };
 
@@ -135,57 +136,11 @@ async function getRestaurantById(req, res) {
         });
 
     } catch (error) {
-
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        });
-
+        console.error(error);
+        renderError(req, res);
     }
 }
 
-// const getRestaurantAvailability=async(req,res)=>{
-//     try {
-//         const {date}=req.query;
-//         if(!date){
-//             res.status(400).json({message:"please provide a date"});
-//             return;
-//         }
-//     const restaurant=await Restaurant.findById(req.params.id);
-//     if(!restaurant){
-//         res.status(404).json({message:"Restaurant not found"})
-//         return;
-//     }
-//     const bookingDate=new Date().toLocaleString;
-
-// //Get all active bookings on this date for the restaurant;
-//     const bookings=await Booking.find({
-//         restaurant:restaurant._id,
-//         // date:Date,
-//         date: new Date(date),
-//         status:"confirmed",
-//     });
-
-//     //map slots to available capacities
-//     const availablity=restaurant.availableSlots.map((slot)=>{
-//         const bookedSeats = bookings.filter((b)=>b.time===slot).reduce((sum,b)=>sum+b.guests,0)
-
-//         const totalSeats=restaurant.totalSeats || 20;
-//         const availableSeats=Math.max(0,totalSeats-bookedSeats);
-
-//         return {
-//             time:slot,
-//             availableSeats,
-//             isAvailable: availableSeats>0
-//         }
-//     })
-//     res.json(availablity)
-
-//     } catch (error) {
-//         console.error(error);
-//         res.status(400).json({message:error.message});
-//     }
-// };
 const getRestaurantAvailability = async (req, res) => {
     try {
         const { date } = req.query;
@@ -241,9 +196,7 @@ const getRestaurantAvailability = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({
-            message: error.message,
-        });
+        renderError(req, res);
     }
 };
 

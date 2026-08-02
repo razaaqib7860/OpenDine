@@ -32,6 +32,7 @@ const booking=require("./routes/booking");
 const owner=require("./routes/owner");
 const admin=require("./routes/admin");
 const imgUpload = require("./routes/upload");
+const { renderError } = require("./controllers/error");
 
 //test
 // app.get("/test", (req, res) => {

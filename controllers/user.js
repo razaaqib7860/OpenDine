@@ -2,9 +2,12 @@ const User=require("../models/user");
 const {setUser,requireLogin}=require("../service/auth");
 const jwt=require("jsonwebtoken")
 
+const { renderError } = require("./error");
+
+
 async function signup(req, res) {
   try {
-    const { Name, email, password, phone } = req.body;
+    const { Name, email, password, phone,role } = req.body;
 
     if (!Name || !email || !password || !phone) {
       return res.render("signup", {
@@ -42,14 +45,12 @@ async function signup(req, res) {
     return res.redirect("/owner/dashboard");
     }
 
-    const redirectTo = req.body.redirect || "/restaurants";
+    const redirectTo = req.body.redirect || "/";
     return res.redirect(redirectTo);
 
-  } catch (err) {
-    console.error(err);
-    return res.render("signup", {
-      error: "Internal server error",
-    });
+  } catch (error) {
+      console.error(error);
+      renderError(req, res);
   }
 }
 
@@ -87,17 +88,13 @@ async function login(req, res) {
     return res.redirect("/owner/dashboard");
     }
 
-    const redirectTo = req.body.redirect || "/restaurants";
+    const redirectTo = req.body.redirect || "/";
     return res.redirect(redirectTo);  
-  } 
-    
-    catch (err) {
-    console.error(err);
 
-    return res.render("login", {
-      error: "Internal server error",
-    });
-  }
+  } catch (error) {
+        console.error(error);
+        renderError(req, res);
+    }
 }
 
 async function logout(req,res){
@@ -109,29 +106,46 @@ async function logout(req,res){
 // GET /user/profile
 // Access: Private
 async function profile(req, res) {
-  try {
-    const user = await User.findById(req.user.id).select("-password");
+    try {
+        const user = await User.findById(req.user._id).select("-password");
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+        if (!user) {
+            return res.redirect("/user/login");
+        }
+
+        return res.render("profile", {
+            user
+        });
+
+    } catch (error) {
+        console.error(error);
+        renderError(req, res);
     }
-
-    return res.status(200).json({
-      success: true,
-      user,
-    });
-  } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
 }
 
-module.exports={signup,login,logout,profile};
+async function updateProfile(req, res) {
+    try {
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.redirect("/user/login");
+        }
+
+        const { name, email, phone } = req.body;
+
+        if (name) user.Name = name;
+        if (email) user.email = email;
+        if (phone) user.phone = phone;
+
+        await user.save();
+
+        return res.redirect("/profile");
+
+    } catch (error) {
+        console.error(error);
+        renderError(req, res);
+    }
+}
+
+module.exports={signup,login,logout,profile,updateProfile};
 

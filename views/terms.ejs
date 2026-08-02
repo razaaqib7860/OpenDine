@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Conditions — OpenDine Luxury Reserve</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            100: '#FDF8EC',
+                            300: '#E2C285',
+                            400: '#D4AF37',
+                            500: '#C59B27',
+                            600: '#A37E1C',
+                        },
+                        dark: {
+                            900: '#0B0C0E',
+                            800: '#121418',
+                            700: '#1C1F26',
+                            600: '#2A2E39',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .glass-panel {
+            background: rgba(18, 20, 24, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF0CA 0%, #D4AF37 50%, #996515 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0C0E;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A2E39;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-gray-200 font-sans antialiased overflow-x-hidden selection:bg-gold-400 selection:text-black">
+
+    <!-- NAVBAR -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
+            <div class="flex items-center space-x-12">
+                <a href="/" class="flex items-center space-x-3 group">
+                    <span class="w-8 h-8 rounded-full border border-gold-400/40 flex items-center justify-center bg-dark-800 text-gold-400 font-serif font-bold">O</span>
+                    <span class="font-serif text-xl tracking-widest text-white font-semibold uppercase">Open<span class="text-gold-400">Dine</span></span>
+                </a>
+
+                <nav class="hidden md:flex items-center space-x-8 text-xs font-medium uppercase tracking-widest">
+                    <a href="/discover" class="text-gray-300 hover:text-gold-400 transition-colors">Discover</a>
+                    <a href="/restaurants" class="text-gray-300 hover:text-gold-400 transition-colors">Restaurants</a>
+                    <a href="/terms" class="text-gold-400 font-semibold transition-colors">Terms of Service</a>
+                </nav>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <% if(locals.user) { %>
+                    <a href="/profile" class="text-xs uppercase text-gold-400 font-semibold"><%= user.name %></a>
+                <% } else { %>
+                    <a href="/user/login" class="text-xs uppercase text-white hover:text-gold-400 transition-colors">Log In</a>
+                <% } %>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO HEADER -->
+    <section class="pt-36 pb-12 px-6 lg:px-12 max-w-4xl mx-auto text-center space-y-4 hero-anim">
+        <span class="text-[10px] uppercase tracking-[0.3em] text-gold-400 font-semibold px-4 py-1.5 rounded-full border border-gold-400/30 glass-panel">
+            Concierge Legal Protocol
+        </span>
+        <h1 class="font-serif text-4xl sm:text-6xl font-normal text-white">
+            Terms & <span class="italic font-light text-[#C8A04A]">Conditions</span>
+        </h1>
+        <p class="text-xs text-gray-400">Last Revised: August 2026 • OpenDine Hospitality Infrastructure</p>
+    </section>
+
+    <!-- LEGAL DOCUMENT CONTENT -->
+    <main class="max-w-4xl mx-auto px-6 lg:px-12 pb-24 space-y-10">
+        
+        <div class="glass-panel p-8 sm:p-12 rounded-3xl border border-gold-400/20 space-y-8 text-xs sm:text-sm text-gray-300 leading-relaxed font-light">
+            
+            <!-- SECTION 1 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-gavel text-gold-400 text-lg mr-3"></i> 1. Terms of Service Governance
+                </h3>
+                <p>
+                    Welcome to OpenDine. By accessing our web application, booking table inventory, or registering an establishment, you agree to be bound by these legal terms and conditions. These terms govern all reservation transactions, concierge communications, and user interactions within the OpenDine platform.
+                </p>
+            </section>
+
+            <!-- SECTION 2 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-user-check text-gold-400 text-lg mr-3"></i> 2. User Eligibility
+                </h3>
+                <p>
+                    You must be at least 18 years of age and possess the legal authority to enter into binding contracts to make table reservations or list establishments. By creating an account, you warrant that all information provided is truthful, accurate, and kept updated.
+                </p>
+            </section>
+
+            <!-- SECTION 3 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-utensils text-gold-400 text-lg mr-3"></i> 3. Restaurant Reservations & Holds
+                </h3>
+                <p>
+                    OpenDine provides real-time table reservation routing. A confirmed booking constitutes a binding commitment between the patron and the restaurant establishment.
+                </p>
+                <ul class="list-disc pl-5 space-y-2 text-gray-400">
+                    <li><strong class="text-white font-medium">Grace Period:</strong> Host desks hold reserved tables for up to 15 minutes past the designated time before releasing the slot to waiting patrons.</li>
+                    <li><strong class="text-white font-medium">Party Accuracy:</strong> Reservation seat counts must accurately reflect guest attendance. Establishments reserve the right to deny seating for unauthorized party sizes.</li>
+                </ul>
+            </section>
+
+            <!-- SECTION 4 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-calendar-xmark text-gold-400 text-lg mr-3"></i> 4. Cancellation & No-Show Policy
+                </h3>
+                <p>
+                    To maintain Michelin-standard table allocation, patrons must cancel upcoming reservations at least 2 hours prior to the scheduled time via the OpenDine dashboard. Repeated unexcused no-shows may lead to automatic concierge reservation holds or account suspension.
+                </p>
+            </section>
+
+            <!-- SECTION 5 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-credit-card text-gold-400 text-lg mr-3"></i> 5. Payments & Concierge Deposits
+                </h3>
+                <p>
+                    Certain exclusive dining rooms or chef tasting tables require a refundable table deposit or booking fee. All online transactions are processed securely through PCI-compliant gateway providers.
+                </p>
+            </section>
+
+            <!-- SECTION 6 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-handshake text-gold-400 text-lg mr-3"></i> 6. User Responsibilities
+                </h3>
+                <p>Patrons and users agree to maintain appropriate decorum, observe restaurant dress codes, and honor agreed dining schedules when visiting OpenDine partner establishments.</p>
+            </section>
+
+            <!-- SECTION 7 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-store text-gold-400 text-lg mr-3"></i> 7. Restaurant Responsibilities
+                </h3>
+                <p>Partner establishments warrant that listed menus, pricing tiers, operating hours, and seating capacities remain accurate in real-time on the OpenDine platform.</p>
+            </section>
+
+            <!-- SECTION 8 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-ban text-gold-400 text-lg mr-3"></i> 8. Prohibited Activities
+                </h3>
+                <p>Users are strictly prohibited from submitting fraudulent table reservations, utilizing automated bots to claim exclusive slots, or scalping reservations to third parties.</p>
+            </section>
+
+            <!-- SECTION 9 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-shield-halved text-gold-400 text-lg mr-3"></i> 9. Limitation of Liability
+                </h3>
+                <p>OpenDine acts as a reservation facilitator and shall not be held liable for food quality, dining service disputes, or personal injury occurring at partner establishments.</p>
+            </section>
+
+            <!-- SECTION 10 & 11 -->
+            <section class="space-y-3 border-b border-white/10 pb-8">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-user-slash text-gold-400 text-lg mr-3"></i> 10. Account Termination & Modifications
+                </h3>
+                <p>OpenDine reserves the right to suspend or terminate accounts that breach these terms. We may revise these terms periodically, with updates published on this page.</p>
+            </section>
+
+            <!-- SECTION 12 -->
+            <section class="space-y-3">
+                <h3 class="font-serif text-2xl text-white font-normal flex items-center">
+                    <i class="fa-solid fa-envelope text-gold-400 text-lg mr-3"></i> 11. Contact Information
+                </h3>
+                <p>For legal inquiries, terms clarification, or platform compliance queries, please reach out to our legal desk:</p>
+                <div class="p-5 rounded-2xl bg-dark-800 border border-gold-400/30 space-y-1">
+                    <p class="text-white font-medium">OpenDine Legal & Compliance Bureau</p>
+                    <p class="text-xs text-gold-400">Email: legal@opendine.com</p>
+                    <p class="text-[11px] text-gray-500">Concierge Desk Hotline: +1 (800) OPENDINE</p>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark-900 border-t border-white/10 pt-16 pb-12 text-gray-400">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between text-[11px] text-gray-500">
+            <a href="/" class="flex items-center space-x-3 mb-4 md:mb-0">
+                <span class="w-6 h-6 rounded-full border border-gold-400/40 flex items-center justify-center bg-dark-800 text-gold-400 font-serif text-xs font-bold">O</span>
+                <span class="font-serif text-sm tracking-widest text-white font-semibold uppercase">Open<span class="text-gold-400">Dine</span></span>
+            </a>
+            <p>&copy; 2026 OpenDine Inc. All rights reserved.</p>
+            <p class="mt-2 md:mt-0 uppercase tracking-widest text-[9px]">Legal Compliance Verified</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('glass-panel', 'py-4');
+                navbar.classList.remove('py-6');
+            } else {
+                navbar.classList.remove('glass-panel', 'py-4');
+                navbar.classList.add('py-6');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.from('.hero-anim', { opacity: 0, y: 30, duration: 1, ease: 'power3.out' });
+        });
+    </script>
+</body>
+</html>

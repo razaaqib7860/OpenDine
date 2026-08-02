@@ -1,5 +1,6 @@
 const Restaurant = require("../models/restaurant");
 const Booking = require("../models/booking");
+const { renderError } = require("./error");
 
 
 async function ownerDashboard(req, res) {
@@ -7,11 +8,16 @@ async function ownerDashboard(req, res) {
         owner: req.user._id
     });
 
-    // const bookings = await Booking.find({
-    //     restaurant: restaurant?._id
-    // }).populate("user");
-    const ownerBookings = restaurant
-    ? await Booking.find({
+      // New owner (no restaurant yet)
+        if (!restaurant) {
+            return res.render("owner-dashboard", {
+                user: req.user,
+                restaurant: null,
+                ownerBookings: []
+            });
+        }
+
+    const ownerBookings = restaurant? await Booking.find({
         restaurant: restaurant._id
     })
     .populate("user", "Name email phone")
@@ -21,11 +27,38 @@ async function ownerDashboard(req, res) {
     res.render("owner-dashboard", {
         user: req.user,
         restaurant,
-        // bookings,
         ownerBookings,
     });
 }
 
+// GET /owner/register-restaurant
+async function renderRestaurantForm(req, res) {
+    try {
+
+        if (!req.user) {
+            return res.redirect("/user/login");
+        }
+
+        const restaurant = await Restaurant.findOne({
+            owner: req.user._id
+        });
+
+        // Already registered
+        if (restaurant) {
+            return res.redirect("/owner/dashboard");
+        }
+
+        return res.render("owner-newRestaurant", {
+            user: req.user,
+            title: "Register Restaurant"
+        });
+
+
+    } catch (error) {
+        console.error(error);
+        renderError(req, res);
+    }
+}
 
 //Get owner's restaurant
 //GET /owner/restaurant
@@ -49,37 +82,28 @@ async function getOwnerRestaurant(req,res){
 
     } catch (error) {
         console.error(error);
-        res.status(400).json({message:error.message});
+        renderError(req, res);
     }
 }
 
 async function createOwnerRestaurant(req, res) {
     try {
 
-        // console.log("BODY:", req.body);
-        // console.log("FILES:", req.files);
-        // console.log("USER:", req.user);
-
-
         if (!req.user) {
-            return res.status(401).json({
-                success: false,
-                message: "Unauthorized"
-            });
+            return res.redirect("/user/login");
         }
-
 
         const existing = await Restaurant.findOne({
             owner: req.user._id
         });
 
         if (existing) {
-            return res.status(400).json({
-                success: false,
-                message: "You already have a restaurant registered"
+            return res.render("owner-newRestaurant", {
+                user: req.user,
+                restaurant: null,
+                error: "You already have a restaurant registered."
             });
         }
-
 
         const {
             name,
@@ -92,22 +116,18 @@ async function createOwnerRestaurant(req, res) {
             tags,
             availableSlots,
             totalSeats,
+            totalTables,
             openingTime,
-            closingTime,
-            totalTables
+            closingTime
         } = req.body;
 
-
-
-        // Required fields
         if (!name || !description || !cuisine || !priceRange || !address) {
-            return res.status(400).json({
-                success: false,
-                message: "Please provide all required fields"
+            return res.render("owner-newRestaurant", {
+                user: req.user,
+                restaurant: null,
+                error: "Please fill all required fields."
             });
         }
-
-
 
         // Generate slug
         const slug = name
@@ -115,18 +135,15 @@ async function createOwnerRestaurant(req, res) {
             .replace(/[^a-z0-9]+/g, "-")
             .replace(/(^-|-$)+/g, "");
 
-
-
         const slugExists = await Restaurant.findOne({ slug });
 
         if (slugExists) {
-            return res.status(400).json({
-                success: false,
-                message: "A restaurant with this name already exists"
+            return res.render("owner-newRestaurant", {
+                user: req.user,
+                restaurant: null,
+                error: "A restaurant with this name already exists."
             });
         }
-
-
 
         // Images
         let imageUrls = [];
@@ -135,27 +152,21 @@ async function createOwnerRestaurant(req, res) {
             imageUrls = req.files.map(file => file.path);
         }
 
-
-
-        // Parse arrays coming from FormData
+        // Parse Arrays
         const parsedCuisine =
             typeof cuisine === "string"
                 ? cuisine.split(",").map(c => c.trim())
                 : cuisine;
 
-
-
         const parsedTags =
             typeof tags === "string"
                 ? tags.split(",").map(t => t.trim())
-                : tags || [];
-
-
+                : [];
 
         const parsedSlots =
             typeof availableSlots === "string"
                 ? availableSlots.split(",").map(s => s.trim())
-                : availableSlots || [
+                : [
                     "17:00",
                     "18:00",
                     "19:00",
@@ -163,9 +174,7 @@ async function createOwnerRestaurant(req, res) {
                     "21:00"
                 ];
 
-
-
-        const restaurant = await Restaurant.create({
+        await Restaurant.create({
             owner: req.user._id,
             name,
             slug,
@@ -178,90 +187,130 @@ async function createOwnerRestaurant(req, res) {
             tags: parsedTags,
             images: imageUrls,
             availableSlots: parsedSlots,
-            totalSeats: totalSeats ? Number(totalSeats): 20,
-            totalTables: totalTables ? Number(totalTables): 0,
+            totalSeats: totalSeats ? Number(totalSeats) : 20,
+            totalTables: totalTables ? Number(totalTables) : 0,
             openingTime,
             closingTime,
             status: "pending"
         });
 
-        return res.status(201).json({
-            success: true,
-            message: "Restaurant registered successfully",
-            restaurant
-        });
-
+        // Redirect to dashboard after successful registration
+        return res.redirect("/owner/dashboard");
 
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        console.error(error);
+        renderError(req, res);
     }
 }
 
-
-//Update owner's restaurant
-//PUT /owner/restaurant
 // async function updateOwnerRestaurant(req,res){
 //     try {
-//         const restaurant= await Restaurant.findOne({owner:req.user?._id})
+
+//         const restaurant = await Restaurant.findOne({
+//             owner:req.user._id
+//         });
+
 //         if(!restaurant){
-//             res.status(404).json({message:"Restaurant profile not found"});
-//             return;
-//         }
-//         const {name,description,cuisine,priceRange,location,address,chef,tags,availableSlots,totalSeats}=req.body;
-//         if (name) restaurant.name = name;
-//         if (description) restaurant.description = description;
-//         if (cuisine) restaurant.cuisine = cuisine;
-//         if (priceRange) restaurant.priceRange = priceRange;
-//         if (location) restaurant.location = location;
-//         if (address) restaurant.address = address;
-//         if (chef) restaurant.chef = chef;
-//         if (totalSeats) restaurant.totalSeats = totalSeats;
-
-//         if (tags){
-//              restaurant.tags = typeof tags ==="string"? tags.split(",").map((t)=>t.trim()):
-//         tags;
+//             return res.status(404).json({
+//                 message:"Restaurant profile not found"
+//             });
 //         }
 
-//         if (availableSlots){
-//             restaurant.availableSlots = typeof availableSlots==="string"? availableSlots.split(",")
-//         .map((s)=>s.trim()): availableSlots;
-//         } 
-       
-//         //Handle new image upload if any
-//         if (images){
-//             if (req.files && req.files.length > 0) {
-//              restaurant.images = req.files.map(file => file.path);
-//             }
+
+//         const {
+//             name,
+//             description,
+//             cuisine,
+//             priceRange,
+//             location,
+//             address,
+//             chef,
+//             tags,
+//             availableSlots,
+//             totalSeats,
+//             openingTime,
+//             closingTime
+//         } = req.body;
+
+
+//         if(name) restaurant.name = name;
+//         if(description) restaurant.description = description;
+//         if(priceRange) restaurant.priceRange = priceRange;
+//         if(location) restaurant.location = location;
+//         if(address) restaurant.address = address;
+//         if(chef) restaurant.chef = chef;
+
+
+//         if(cuisine){
+//             restaurant.cuisine =
+//                 typeof cuisine === "string"
+//                 ? cuisine.split(",").map(c=>c.trim())
+//                 : cuisine;
+//         }
+
+
+//         if(tags){
+//             restaurant.tags =
+//                 typeof tags === "string"
+//                 ? tags.split(",").map(t=>t.trim())
+//                 : tags;
+//         }
+
+
+//         if(availableSlots){
+//             restaurant.availableSlots =
+//                 typeof availableSlots === "string"
+//                 ? availableSlots.split(",").map(s=>s.trim())
+//                 : availableSlots;
+//         }
+
+
+//         if(totalSeats !== undefined)
+//             restaurant.totalSeats = totalSeats;
+
+
+//         if(openingTime)
+//             restaurant.openingTime = openingTime;
+
+//         if(closingTime)
+//             restaurant.closingTime = closingTime;
+
+
+//         if(req.files && req.files.length > 0){
+//             restaurant.images = req.files.map(file=>file.path);
+//         }
+
+//          if (name) {
+//             restaurant.slug = name
+//                 .toLowerCase()
+//                 .replace(/[^a-z0-9]+/g, "-")
+//                 .replace(/(^-|-$)+/g, "");
 //         }
 
 
 //         await restaurant.save();
-//         return res.status(200).json({
-//             message: "Restaurant updated successfully",
-//             restaurant
-//         });
+
+//         return res.redirect("/owner/dashboard");
 
 //     } catch (error) {
 //         console.error(error);
-//         res.status(400).json({message:error.message});
+//         renderError(req, res);
 //     }
 // }
-async function updateOwnerRestaurant(req,res){
+
+//Get bookings for  owner's restaurant 
+//GET /owner/bookings
+
+async function updateOwnerRestaurant(req, res) {
     try {
 
         const restaurant = await Restaurant.findOne({
-            owner:req.user._id
+            owner: req.user._id
         });
 
-        if(!restaurant){
-            return res.status(404).json({
-                message:"Restaurant profile not found"
-            });
+        if (!restaurant) {
+            return res.redirect("/owner/dashboard");
         }
-
 
         const {
             name,
@@ -274,80 +323,81 @@ async function updateOwnerRestaurant(req,res){
             tags,
             availableSlots,
             totalSeats,
+            totalTables,
             openingTime,
             closingTime
         } = req.body;
 
+        // Basic Details
+        if (name) restaurant.name = name;
+        if (description) restaurant.description = description;
+        if (priceRange) restaurant.priceRange = priceRange;
+        if (location) restaurant.location = location;
+        if (address) restaurant.address = address;
+        if (chef) restaurant.chef = chef;
 
-        if(name) restaurant.name = name;
-        if(description) restaurant.description = description;
-        if(priceRange) restaurant.priceRange = priceRange;
-        if(location) restaurant.location = location;
-        if(address) restaurant.address = address;
-        if(chef) restaurant.chef = chef;
-
-
-        if(cuisine){
+        // Arrays
+        if (cuisine) {
             restaurant.cuisine =
                 typeof cuisine === "string"
-                ? cuisine.split(",").map(c=>c.trim())
-                : cuisine;
+                    ? cuisine.split(",").map(c => c.trim())
+                    : cuisine;
         }
 
-
-        if(tags){
+        if (tags) {
             restaurant.tags =
                 typeof tags === "string"
-                ? tags.split(",").map(t=>t.trim())
-                : tags;
+                    ? tags.split(",").map(t => t.trim())
+                    : tags;
         }
 
-
-        if(availableSlots){
+        if (availableSlots) {
             restaurant.availableSlots =
                 typeof availableSlots === "string"
-                ? availableSlots.split(",").map(s=>s.trim())
-                : availableSlots;
+                    ? availableSlots.split(",").map(s => s.trim())
+                    : availableSlots;
         }
 
+        // Numbers
+        if (totalSeats)
+            restaurant.totalSeats = Number(totalSeats);
 
-        if(totalSeats !== undefined)
-            restaurant.totalSeats = totalSeats;
+        if (totalTables)
+            restaurant.totalTables = Number(totalTables);
 
-
-        if(openingTime)
+        // Timing
+        if (openingTime)
             restaurant.openingTime = openingTime;
 
-        if(closingTime)
+        if (closingTime)
             restaurant.closingTime = closingTime;
 
-
-        if(req.files && req.files.length > 0){
-            restaurant.images = req.files.map(file=>file.path);
+        // Images
+        if (req.files && req.files.length > 0) {
+            restaurant.images = req.files.map(file => file.path);
         }
 
+        // If restaurant name changes, regenerate slug
+        if (name) {
+            restaurant.slug = name
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/(^-|-$)+/g, "");
+        }
+
+        // Since details changed, send for review again (optional)
+        // restaurant.status = "pending";
 
         await restaurant.save();
 
+        return res.redirect("/owner/dashboard");
 
-        res.status(200).json({
-            message:"Restaurant updated successfully",
-            restaurant
-        });
-
-
-    } catch(error){
+    } catch (error) {
         console.error(error);
-
-        res.status(500).json({
-            message:error.message
-        });
+        renderError(req, res);
     }
 }
 
-
-//Get bookings for  owner's restaurant 
-//GET /owner/bookings
 async function getOwnerBookings(req,res){
     try {
         // console.log("USER FROM REQUEST:", req.user);
@@ -362,14 +412,12 @@ async function getOwnerBookings(req,res){
 
         res.json(bookings);
         
+    }catch (error) {
+        console.error(error);
+        renderError(req, res);
     }
-    catch(error){
-    return res.status(500).json({
-        success: false,
-        message: error.message,
-    });
-  }
 }
+
 
 //Update status of a booking
 //PUT /owner/bookings/status/:id
@@ -400,13 +448,14 @@ async function updateBookingStatus(req,res){
 
     } catch (error) {
         console.error(error);
-        res.status(400).json({message:error.message});
+        renderError(req, res);
     }
 }
 
 
 module.exports={
     ownerDashboard,
+    renderRestaurantForm,
     getOwnerRestaurant,
     createOwnerRestaurant,
     updateOwnerRestaurant,

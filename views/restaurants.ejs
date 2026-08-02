@@ -165,13 +165,13 @@
         <div class="swiper topHeroSwiper h-full w-full">
             <div class="swiper-wrapper">
                 <div class="swiper-slide overflow-hidden">
-                    <div class="hero-bg h-full w-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=2000');"></div>
+                    <div class="hero-bg h-full w-full bg-cover bg-center" style="background-image: url('/images/rest1.jpg');"></div>
                 </div>
                 <div class="swiper-slide overflow-hidden">
-                    <div class="hero-bg h-full w-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&q=80&w=2000');"></div>
+                    <div class="hero-bg h-full w-full bg-cover bg-center" style="background-image: url('/images/rest4.jpg');"></div>
                 </div>
                 <div class="swiper-slide overflow-hidden">
-                    <div class="hero-bg h-full w-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=2000');"></div>
+                    <div class="hero-bg h-full w-full bg-cover bg-center" style="background-image: url('/images/hero.jpg');"></div>
                 </div>
             </div>
         </div>
@@ -184,7 +184,7 @@
                     Explore Restaurants
                 </span>
                 <h1 class="font-serif text-4xl md:text-6xl font-normal text-white tracking-tight leading-tight">
-                    DISCOVER <span class="italic gold-gradient-text">FINE DINING</span>
+                    DISCOVER <span class="italic font-light text-[#C8A04A]">FINE DINING</span>
                 </h1>
             </div>
 
@@ -338,9 +338,33 @@
                                 
                                 <!-- Card Image -->
                                 <div class="relative h-64 overflow-hidden">
-                                    <img src="<%= restaurant.images && restaurant.images.length > 0 ? restaurant.images[0] : 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&q=80&w=800' %>" 
-                                         alt="<%= restaurant.name %>" 
-                                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out">
+ <%
+const defaultImages = [
+    "/images/rest1.jpg",
+    "/images/rest2.jpg",
+    "/images/rest3.jpg",
+    "/images/rest4.jpg",
+    "/images/rest5.jpg",
+    "/images/img1.jpg",
+    "/images/img2.jpg",
+    "/images/img3.jpg",
+    "/images/img4.jpg",    
+];
+
+const randomDefault =
+    defaultImages[Math.floor(Math.random() * defaultImages.length)];
+
+const image =
+    (restaurant.images && restaurant.images.length > 0)
+        ? restaurant.images[0]
+        : randomDefault;
+%>
+
+<img
+    src="<%= image %>"
+    alt="<%= restaurant.name %>"
+    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+>
                                     <div class="absolute inset-0 bg-gradient-to-t from-dark-800 via-transparent to-transparent"></div>
                                     
                                     <div class="absolute top-4 left-4 flex gap-2">
@@ -351,7 +375,7 @@
 
                                     <div class="absolute top-4 right-4">
                                         <span class="bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-xs text-white font-medium">
-                                            <%= restaurant.priceRange || '$$$$' %>
+                                        Avg ₹<%= restaurant.priceRange || 1000 %> • 2 Guests
                                         </span>
                                     </div>
                                 </div>

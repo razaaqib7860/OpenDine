@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Your Restaurant | OpenDine Partner</title>
+  
+  <!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind Theme Configuration -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              black: '#0A0A0B',
+              dark: '#121215',
+              card: 'rgba(22, 22, 27, 0.75)',
+              border: 'rgba(212, 175, 55, 0.2)',
+              gold: '#D4AF37',
+              'gold-light': '#F3E5AB',
+              'gold-dark': '#997A15',
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          boxShadow: {
+            'gold-glow': '0 0 25px -5px rgba(212, 175, 55, 0.3)',
+            'gold-glow-lg': '0 0 40px -5px rgba(212, 175, 55, 0.5)',
+            'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* OpenDine Glassmorphism & Utility Styles */
+    .glass-card {
+      background: rgba(18, 18, 21, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+    }
+    
+    .glass-input {
+      background: rgba(10, 10, 11, 0.6);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      color: #F3F4F6;
+      transition: all 0.3s ease;
+    }
+    
+    .glass-input:focus {
+      outline: none;
+      border-color: #D4AF37;
+      box-shadow: 0 0 15px -3px rgba(212, 175, 55, 0.3);
+      background: rgba(15, 15, 18, 0.85);
+    }
+
+    /* Custom Dark Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0A0A0B;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #222228;
+      border-radius: 4px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D4AF37;
+    }
+
+    select option {
+      background-color: #121215;
+      color: #F3F4F6;
+    }
+  </style>
+</head>
+
+<body class="bg-brand-black text-gray-200 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-gold selection:text-black">
+
+  <!-- NAVBAR -->
+  <header class="sticky top-0 z-50 w-full glass-card border-b border-brand-border/40 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-gold-dark via-brand-gold to-brand-gold-light p-[1px] flex items-center justify-center shadow-gold-glow group-hover:scale-105 transition-transform">
+          <div class="w-full h-full bg-brand-black rounded-full flex items-center justify-center">
+            <i data-lucide="utensils-crossed" class="w-5 h-5 text-brand-gold"></i>
+          </div>
+        </div>
+        <span class="font-serif text-2xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-100 to-brand-gold">
+          OpenDine
+        </span>
+      </a>
+
+      <div class="flex items-center gap-4">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-gold/10 border border-brand-gold/30 text-brand-gold">
+          <span class="w-2 h-2 rounded-full bg-brand-gold animate-pulse"></span>
+          Partner Portal
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN SECTION -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
+    
+    <!-- HERO SECTION -->
+    <section class="text-center max-w-3xl mx-auto mb-12 lg:mb-16 fade-element">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-gold/10 border border-brand-gold/30 text-brand-gold text-xs font-semibold tracking-widest uppercase mb-6 shadow-gold-glow">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+        Restaurant Partner
+      </div>
+      
+      <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6">
+        Register Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-brand-gold-light to-brand-gold">Restaurant</span>
+      </h1>
+      
+      <p class="text-base sm:text-lg text-gray-400 font-light leading-relaxed max-w-2xl mx-auto">
+        Create your restaurant profile and submit it for manual verification. 
+        Every restaurant is carefully reviewed before becoming available to guests.
+      </p>
+    </section>
+
+    <!-- CONTENT LAYOUT -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+      
+      <!-- LEFT: REGISTRATION FORM (8 Columns) -->
+      <div class="lg:col-span-8 fade-element">
+        <div class="glass-card rounded-3xl p-6 sm:p-10 shadow-glass border border-brand-border/30 relative overflow-hidden">
+          
+          <div class="absolute -top-24 -left-24 w-60 h-60 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+
+          <form 
+            id="restaurantRegistrationForm"
+            action="/owner" 
+            method="POST" 
+            enctype="multipart/form-data" 
+            class="space-y-8"
+          >
+            
+            <!-- SECTION 1: BASIC INFORMATION -->
+            <div class="space-y-6">
+              <div class="border-b border-brand-border/20 pb-3 flex items-center gap-2">
+                <i data-lucide="store" class="w-5 h-5 text-brand-gold"></i>
+                <h2 class="font-serif text-xl font-semibold text-white">Basic Information</h2>
+              </div>
+
+              <!-- Name & Chef -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label for="name" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                    Restaurant Name <span class="text-brand-gold">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    required 
+                    placeholder="e.g. L'Ambroisie"
+                    class="w-full glass-input px-4 py-3.5 rounded-xl text-sm"
+                  >
+                </div>
+
+                <div>
+                  <label for="chef" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                    Chef Name
+                  </label>
+                  <input 
+                    type="text" 
+                    id="chef" 
+                    name="chef" 
+                    placeholder="e.g. Chef Marco Pierre"
+                    class="w-full glass-input px-4 py-3.5 rounded-xl text-sm"
+                  >
+                </div>
+              </div>
+
+              <!-- Description -->
+              <div>
+                <label for="description" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                  Description <span class="text-brand-gold">*</span>
+                </label>
+                <textarea 
+                  id="description" 
+                  name="description" 
+                  rows="4" 
+                  required 
+                  placeholder="Share the heritage, culinary vision, and unique dining atmosphere..."
+                  class="w-full glass-input px-4 py-3.5 rounded-xl text-sm resize-none"
+                ></textarea>
+              </div>
+
+              <!-- Cuisine & Price Range -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label for="cuisine" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                    Cuisine <span class="text-brand-gold">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="cuisine" 
+                    name="cuisine" 
+                    required 
+                    placeholder="Italian, Chinese, Indian"
+                    class="w-full glass-input px-4 py-3.5 rounded-xl text-sm"
+                  >
+                </div>
+
+                <div>
+                  <label for="priceRange" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                    Average Cost for Two <span class="text-brand-gold">*</span>
+                  </label>
+
+                  <select 
+                    id="priceRange" 
+                    name="priceRange" 
+                    required 
+                    class="w-full glass-input px-4 py-3.5 rounded-xl text-sm cursor-pointer"
+                  >
+                    <option value="" disabled selected>Select Average Cost for Two</option>
+                    <option value="250">₹250 for Two</option>
+                     <option value="500">₹500 for Two</option>
+                     <option value="1000">₹1,000 for Two</option>
+                     <option value="1500">₹1,500 for Two</option>
+                     <option value="2000">₹2,000 for Two</option>
+                     <option value="3000">₹3,000 for Two</option>
+                     <option value="4000">₹4,000 for Two</option>
+                     <option value="5000">₹5,000+ for Two</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Tags -->
+              <div>
+                <label for="tags" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                  Tags
+                </label>
+                <input 
+                  type="text" 
+                  id="tags" 
+                  name="tags" 
+                  placeholder="Family Friendly, Rooftop, Romantic"
+                  class="w-full glass-input px-4 py-3.5 rounded-xl text-sm"
+                >
+              </div>
+            </div>
+
+            <!-- SECTION 2: LOCATION & ADDRESS -->
+            <div class="space-y-6 pt-4">
+              <div class="border-b border-brand-border/20 pb-3 flex items-center gap-2">
+                <i data-lucide="map-pin" class="w-5 h-5 text-brand-gold"></i>
+                <h2 class="font-serif text-xl font-semibold text-white">Location Details</h2>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="sm:col-span-1">
+                  <label for="location" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                    Location
+                  </label>
+                  <input 
+                    type="text" 
+                    id="location" 
+                    name="location" 
+                    placeholder="e.g. Bandra West, Mumbai"
+                    class="w-full glass-input px-4 py-3.5 rounded-xl text-sm"
+                  >
+                </div>
+
+                <div class="sm:col-span-2">
+                  <label for="address" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                    Full Address <span class="text-brand-gold">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="address" 
+                    name="address" 
+                    required 
+                    placeholder="Plot No, Street, Landmark, Pincode"
+                    class="w-full glass-input px-4 py-3.5 rounded-xl text-sm"
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 3: TIMINGS & CAPACITY -->
+            <div class="space-y-6 pt-4">
+              <div class="border-b border-brand-border/20 pb-3 flex items-center gap-2">
+                <i data-lucide="clock" class="w-5 h-5 text-brand-gold"></i>
+                <h2 class="font-serif text-xl font-semibold text-white">Timings & Capacity</h2>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div>
+                  <label for="openingTime" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                    Opening Time
+                  </label>
+                  <input 
+                    type="time" 
+                    id="openingTime" 
+                    name="openingTime" 
+                    class="w-full glass-input px-4 py-3.5 rounded-xl text-sm"
+                  >
+                </div>
+
+                <div>
+                  <label for="closingTime" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                    Closing Time
+                  </label>
+                  <input 
+                    type="time" 
+                    id="closingTime" 
+                    name="closingTime" 
+                    class="w-full glass-input px-4 py-3.5 rounded-xl text-sm"
+                  >
+                </div>
+
+                <div>
+                  <label for="totalSeats" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                    Total Seats
+                  </label>
+                  <input 
+                    type="number" 
+                    id="totalSeats" 
+                    name="totalSeats" 
+                    min="1"
+                    placeholder="120"
+                    class="w-full glass-input px-4 py-3.5 rounded-xl text-sm"
+                  >
+                </div>
+
+                <div>
+                  <label for="totalTables" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                    Total Tables
+                  </label>
+                  <input 
+                    type="number" 
+                    id="totalTables" 
+                    name="totalTables" 
+                    min="1"
+                    placeholder="30"
+                    class="w-full glass-input px-4 py-3.5 rounded-xl text-sm"
+                  >
+                </div>
+              </div>
+
+              <div>
+                <label for="availableSlots" class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                  Available Slots
+                </label>
+                <input 
+                  type="text" 
+                  id="availableSlots" 
+                  name="availableSlots" 
+                  placeholder="17:00,18:00,19:00,20:00,21:00"
+                  class="w-full glass-input px-4 py-3.5 rounded-xl text-sm"
+                >
+              </div>
+            </div>
+
+            <!-- SECTION 4: IMAGE UPLOAD -->
+            <div class="space-y-6 pt-4">
+              <div class="border-b border-brand-border/20 pb-3 flex items-center gap-2">
+                <i data-lucide="image" class="w-5 h-5 text-brand-gold"></i>
+                <h2 class="font-serif text-xl font-semibold text-white">Restaurant Images</h2>
+              </div>
+
+              <div>
+                <!-- Drag and Drop Upload Area -->
+                <div 
+                  id="dropZone" 
+                  class="relative group rounded-2xl border-2 border-dashed border-brand-gold/40 hover:border-brand-gold bg-brand-black/40 hover:bg-brand-black/70 transition-all duration-300 p-8 text-center cursor-pointer overflow-hidden glass-card"
+                >
+                  <input 
+                    type="file" 
+                    id="images" 
+                    name="images" 
+                    multiple 
+                    accept="image/*" 
+                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  >
+
+                  <div class="flex flex-col items-center justify-center space-y-3 pointer-events-none">
+                    <div class="w-14 h-14 rounded-full bg-brand-gold/10 border border-brand-gold/30 flex items-center justify-center text-brand-gold group-hover:scale-110 group-hover:bg-brand-gold group-hover:text-black transition-all duration-300 shadow-gold-glow">
+                      <i data-lucide="upload-cloud" class="w-7 h-7"></i>
+                    </div>
+                    <div class="space-y-1">
+                      <p class="text-sm font-medium text-gray-200">
+                        <span class="text-brand-gold font-semibold underline decoration-brand-gold/50 underline-offset-4">Click to upload</span> or drag and drop
+                      </p>
+                      <p class="text-xs text-gray-400">Supports multiple high-resolution restaurant images</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Preview Selected Files -->
+                <div id="filePreview" class="mt-4 hidden space-y-2">
+                  <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Selected Files:</p>
+                  <div id="fileList" class="flex flex-wrap gap-2"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SUBMIT BUTTON -->
+            <div class="pt-6">
+              <button 
+                type="submit" 
+                id="submitBtn" 
+                class="w-full group relative inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-black bg-gradient-to-r from-brand-gold via-brand-gold-light to-brand-gold bg-[length:200%_auto] rounded-xl overflow-hidden shadow-gold-glow transition-all duration-500 hover:scale-[1.01] hover:shadow-gold-glow-lg active:scale-[0.99] hover:bg-right"
+              >
+                <span id="btnText" class="flex items-center gap-2">
+                  Submit for Review
+                  <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </span>
+                
+                <span id="btnSpinner" class="hidden flex items-center gap-3">
+                  <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Submitting...
+                </span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      <!-- RIGHT: VERIFICATION SIDEBAR (4 Columns) -->
+      <aside class="lg:col-span-4 space-y-6 fade-element">
+        
+        <!-- STEP 1: VERIFICATION PROCESS CARD -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-glass border border-brand-border/30 relative">
+          <h3 class="font-serif text-xl font-bold text-white mb-6 flex items-center gap-2">
+            <i data-lucide="shield-check" class="w-5 h-5 text-brand-gold"></i>
+            Verification Process
+          </h3>
+
+          <ol class="relative border-l border-brand-border/30 ml-3 space-y-8">
+            <li class="ml-6 group">
+              <span class="absolute flex items-center justify-center w-7 h-7 bg-brand-gold rounded-full -left-3.5 ring-4 ring-brand-black text-black text-xs font-bold shadow-gold-glow">
+                1
+              </span>
+              <h4 class="font-semibold text-white text-sm">Submit Restaurant</h4>
+              <p class="text-xs text-gray-400 mt-1">Fill out restaurant details and upload gallery images.</p>
+            </li>
+
+            <li class="ml-6 group">
+              <span class="absolute flex items-center justify-center w-7 h-7 bg-brand-dark border border-brand-gold/40 rounded-full -left-3.5 ring-4 ring-brand-black text-brand-gold text-xs font-bold">
+                2
+              </span>
+              <h4 class="font-semibold text-gray-200 text-sm">Admin Review</h4>
+              <p class="text-xs text-gray-400 mt-1">Our editorial team reviews information and imagery.</p>
+            </li>
+
+            <li class="ml-6 group">
+              <span class="absolute flex items-center justify-center w-7 h-7 bg-brand-dark border border-brand-gold/40 rounded-full -left-3.5 ring-4 ring-brand-black text-brand-gold text-xs font-bold">
+                3
+              </span>
+              <h4 class="font-semibold text-gray-200 text-sm">Verification</h4>
+              <p class="text-xs text-gray-400 mt-1">Profile compliance and backend status approval.</p>
+            </li>
+
+            <li class="ml-6 group">
+              <span class="absolute flex items-center justify-center w-7 h-7 bg-brand-dark border border-brand-gold/40 rounded-full -left-3.5 ring-4 ring-brand-black text-brand-gold text-xs font-bold">
+                4
+              </span>
+              <h4 class="font-semibold text-gray-200 text-sm">Published on OpenDine</h4>
+              <p class="text-xs text-gray-400 mt-1">Your profile becomes active for guest reservations.</p>
+            </li>
+          </ol>
+        </div>
+
+        <!-- STEP 2: CHECKLIST CARD -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-glass border border-brand-border/30">
+          <h3 class="font-serif text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <i data-lucide="check-circle-2" class="w-5 h-5 text-brand-gold"></i>
+            Before You Submit
+          </h3>
+
+          <ul class="space-y-3.5 text-xs text-gray-300">
+            <li class="flex items-start gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-brand-gold shrink-0 mt-0.5"></i>
+              <span>High quality restaurant photos</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-brand-gold shrink-0 mt-0.5"></i>
+              <span>Accurate restaurant information</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-brand-gold shrink-0 mt-0.5"></i>
+              <span>Correct address</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-brand-gold shrink-0 mt-0.5"></i>
+              <span>Correct opening hours</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-brand-gold shrink-0 mt-0.5"></i>
+              <span>Cuisine information</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-brand-gold shrink-0 mt-0.5"></i>
+              <span>Professional description</span>
+            </li>
+          </ul>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto border-t border-brand-border/20 glass-card">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
+      <div class="flex items-center gap-2">
+        <i data-lucide="utensils-crossed" class="w-4 h-4 text-brand-gold"></i>
+        <span>&copy; OpenDine. All rights reserved.</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="#" class="hover:text-brand-gold transition-colors">Privacy Policy</a>
+        <a href="#" class="hover:text-brand-gold transition-colors">Terms of Service</a>
+        <a href="#" class="hover:text-brand-gold transition-colors">Partner Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT FOR FRONTEND INTERACTIVITY & ANIMATION -->
+  <script>
+    // Lucide Icons Initialization
+    lucide.createIcons();
+
+    // DOM References
+    const form = document.getElementById('restaurantRegistrationForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const imageInput = document.getElementById('images');
+    const dropZone = document.getElementById('dropZone');
+    const filePreview = document.getElementById('filePreview');
+    const fileList = document.getElementById('fileList');
+
+    // Drag and drop Visual Effects
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-brand-gold', 'bg-brand-black/80');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-brand-gold', 'bg-brand-black/80');
+      }, false);
+    });
+
+    // File Preview Rendering
+    imageInput.addEventListener('change', updateFilePreview);
+
+    function updateFilePreview() {
+      const files = imageInput.files;
+      fileList.innerHTML = '';
+
+      if (files.length > 0) {
+        filePreview.classList.remove('hidden');
+        Array.from(files).forEach((file) => {
+          const badge = document.createElement('span');
+          badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-brand-gold/10 border border-brand-gold/30 text-brand-gold-light';
+          badge.innerHTML = `<i data-lucide="file-image" class="w-3.5 h-3.5 text-brand-gold"></i> ${file.name}`;
+          fileList.appendChild(badge);
+        });
+        lucide.createIcons();
+      } else {
+        filePreview.classList.add('hidden');
+      }
+    }
+
+    // Frontend Submission State Animation
+    form.addEventListener('submit', function (e) {
+      if (form.checkValidity()) {
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-90', 'cursor-not-allowed');
+        btnText.classList.add('hidden');
+        btnSpinner.classList.remove('hidden');
+      }
+    });
+
+    // Smooth Entrance Animations
+    document.addEventListener("DOMContentLoaded", () => {
+      const fadeElements = document.querySelectorAll('.fade-element');
+      fadeElements.forEach((el, index) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = `opacity 0.6s ease ${index * 0.15}s, transform 0.6s ease ${index * 0.15}s`;
+        
+        requestAnimationFrame(() => {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
