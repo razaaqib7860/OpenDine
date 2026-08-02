@@ -8,6 +8,7 @@ const cookieParser=require("cookie-parser");
 const {checkAuth,restrictTo}=require("./middleware/auth");
 
 const connectMongoDB=require("./connection");
+console.log("MONGO_URL:", process.env.MONGO_URL);
 connectMongoDB(process.env.MONGO_URL);
 
 const methodOverride = require("method-override");
